@@ -1,0 +1,70 @@
+[build-system]
+requires = ["uv_build>=0.8,<0.10"]
+build-backend = "uv_build"
+
+[project]
+name = "cinfarm-api"
+version = "0.1.0"
+description = "API REST com Flask e SQLAlchemy"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Ana Clara Souza Bizarria", email = "acsb2@cin.ufpe.br" },
+    { name = "Byanca Hayally Candido de Souza", email = "bhcs@cin.ufpe.br" },
+    { name = "Gabriel Cássio Gomes Cileiro", email = "gcgc@cin.ufpe.br" },
+    { name = "Jaianny Karla de Oliveira Souza", email = "jkos@cin.ufpe.br" },
+    { name = "Luiz Miguel de Oliveira Siqueira", email = "lmos2@cin.ufpe.br" },
+    { name = "Raiana Lais Pereira Donato", email = "rlpd@cin.ufpe.br" },
+    { name = "Samara Petrilly de Arruda Barbosa", email = "spab@cin.ufpe.br" },
+    { name = "Samuel Renan Mendes Umbelino do Monte", email = "srmum@cin.ufpe.br" }
+]
+dependencies = [
+    "Flask>=3.0,<4.0",
+    "SQLAlchemy>=2.0,<3.0",
+    "Flask-SQLAlchemy>=3.1,<4.0",
+    "Flask-Migrate>=4.0,<5.0",
+    "Flask-Cors>=4.0",
+    "marshmallow>=3.20,<4.0",
+    "python-dotenv>=1.0",
+    "gunicorn>=22.0",
+    "psycopg[binary]>=3.1"
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.uv.build-backend]
+module-name = "src"
+module-root = ""
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --cov=src --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["."]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "."
+strict = true
+ignore_missing_imports = true
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
