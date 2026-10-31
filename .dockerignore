@@ -1,0 +1,68 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.python-version
+build/
+dist/
+
+# Tools/Caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Enviroment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.pgpass
+pg_service.conf
+.pg_service.conf
+
+# PostgreSQL
+pgdata/
+postgres_data/
+postgres-data/
+.postgres/
+db-data/
+*.dump
+*.backup
+*.pgdump
+*.sql.gz
+*.sql
+init-db/
+
+# Test
+tests/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+compose*.yml
+.dockerignore
+
+# IDEs e SO
+.vscode/
+.idea/
+.devcontainer/
+.DS_Store
+Thumbs.db
+
+# Docs and Logs
+docs/
+*.md
+!README.md
+*.log
+logs/
