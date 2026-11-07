@@ -36,17 +36,19 @@ O fluxo pretendido é:
 git clone https://github.com/GabrielCassio/cinfarm.git
 cd cinfarm
 cp apps/backend/.env.example apps/backend/.env
-docker compose up --build
+make dev
 ```
 
 O backend está configurado para a porta `8000`, em <http://localhost:8000>. Não há documentação de API nem endpoint funcional de verificação no estado atual. O healthcheck do Compose tenta consultar essa mesma URL.
 
-O Compose declara também os serviços `database` e `nginx`, mas eles ainda não têm imagem nem porta configuradas. Além disso, o build do backend referencia um `uv.lock` ausente. Portanto, o fluxo acima depende dessas pendências serem corrigidas.
+O frontend está configurado para a porta `5173`, em <http://localhost:5173>. Não há documentação de System Design, UI/UX no estado atual. O healthcheck do Compose tenta consultar essa mesma URL.
+
+O Compose declara também os serviços `database`, `pgadmin4` e `nginx`, com imagens estáveis definidas e suas portas. Além disso, o build do backend referencia um `uv.lock` ausente. Portanto, o fluxo acima depende dessas pendências serem corrigidas.
 
 Para parar e remover os containers:
 
 ```bash
-docker compose down
+make dev-clear
 ```
 
 Não há usuário, senha de aplicação, migrations ou seed definidos no repositório.
@@ -73,9 +75,13 @@ Não há usuário, senha de aplicação, migrations ou seed definidos no reposit
 │   │   ├── README.md             # [Documentação do backend](apps/backend/README.md)
 │   │   └── src/
 │   │       └── __init__.py       # Pacote da aplicação, atualmente vazio
-│   ├── database/                 # Diretório reservado para o banco
+│   ├── frontend/                 # Estrutura do Frontend
+│   │   ├── public/			         # Assets estáticos do frontend
+│   │   ├── src/         					# Codebase do frontend
+│   │   └── Dockerfile            # Imagens de desenvolvimento e produção
 │   └── nginx/                    # Dockerfile e configuração do Nginx
 ├── docker-compose.yaml           # Orquestração dos serviços
+├── docker-compose.dev.yaml       # Orquestração dos serviços/conteiners de desenvolvimento
 ├── Makefile                      # Arquivo de automação, sem alvos
 ├── .dockerignore                 # Arquivos ignorados no build
 ├── .github/
