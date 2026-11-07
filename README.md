@@ -97,14 +97,14 @@ Não há endpoints implementados ou documentação de API no repositório. O `ap
 
 | Nome | Função | GitHub |
 |---|---|---|
-| Ana Clara Souza Bizarria | <A definir> | <@anaclarays> |
-| Byanca Hayally Candido de Souza | <A definir> | <@> |
-| Gabriel Cássio Gomes Cileiro | <A definir> | <@GabrielCassio> |
-| Jaianny Karla de Oliveira Souza| <A definir> | <@jaikarla> |
-| Luiz Miguel de Oliveira Siqueira | <A definir> | <@oliveiraluizmiguel57-blip> |
-| Raiana Lais Pereira Donato | <A definir> | <@raianalais> |
-| Samara Petrilly de Arruda Barbosa| <A definir> | <@samarapetrilly> |
-| Samuel Renan Mendes Umbelino do Monte | <A definir> | <@Samukarn> |
+| Ana Clara Souza Bizarria | dev | <@anaclarays> |
+| Byanca Hayally Candido de Souza | dev | <@> |
+| Gabriel Cássio Gomes Cileiro | dev | <@GabrielCassio> |
+| Jaianny Karla de Oliveira Souza| dev | <@jaikarla> |
+| Luiz Miguel de Oliveira Siqueira | dev | <@oliveiraluizmiguel57-blip> |
+| Raiana Lais Pereira Donato | dev | <@raianalais> |
+| Samara Petrilly de Arruda Barbosa| dev | <@samarapetrilly> |
+| Samuel Renan Mendes Umbelino do Monte | dev | <@Samukarn> |
 
 
 ## Licença

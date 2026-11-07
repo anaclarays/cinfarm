@@ -21,8 +21,9 @@ RUN npm ci
 
 # ---------- Development ----------
 FROM deps AS dev
-COPY . .
-EXPOSE 3000
+COPY --chown=node:node . .
+RUN chown -R node:node /app
+EXPOSE 5173
 CMD ["npm", "run", "dev"]
 
 # ---------- Test ----------
@@ -36,11 +37,11 @@ COPY . .
 RUN npm run build
 
 # ---------- Production ----------
-FROM node:20-bookworm-slim AS prod
+FROM base AS prod
 WORKDIR /app
-ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0
-RUN addgroup --system app && adduser --system --ingroup app app
+ENV NODE_ENV=production PORT=5173 HOSTNAME=0.0.0.0
+	RUN addgroup --system app && adduser --system --ingroup app app
 COPY --from=build --chown=app:app /app/public ./public
 USER app
-EXPOSE 3000
+EXPOSE 5173
 CMD ["node", "server.js"]
