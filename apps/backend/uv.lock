@@ -101,6 +101,7 @@ dependencies = [
     { name = "flask" },
     { name = "flask-cors" },
     { name = "flask-migrate" },
+    { name = "flask-seeder" },
     { name = "flask-sqlalchemy" },
     { name = "gunicorn" },
     { name = "marshmallow" },
@@ -122,6 +123,7 @@ requires-dist = [
     { name = "flask", specifier = ">=3.0,<4.0" },
     { name = "flask-cors", specifier = ">=4.0" },
     { name = "flask-migrate", specifier = ">=4.0,<5.0" },
+    { name = "flask-seeder", specifier = ">=1.2.0" },
     { name = "flask-sqlalchemy", specifier = ">=3.1,<4.0" },
     { name = "gunicorn", specifier = ">=22.0" },
     { name = "marshmallow", specifier = ">=3.20,<4.0" },
@@ -324,6 +326,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5a/8e/47c7b3c93855ceffc2eabfa271782332942443321a07de193e4198f920cf/flask_migrate-4.1.0.tar.gz", hash = "sha256:1a336b06eb2c3ace005f5f2ded8641d534c18798d64061f6ff11f79e1434126d", size = 21965, upload-time = "2025-01-10T18:51:11.848Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/c4/3f329b23d769fe7628a5fc57ad36956f1fb7132cf8837be6da762b197327/Flask_Migrate-4.1.0-py3-none-any.whl", hash = "sha256:24d8051af161782e0743af1b04a152d007bad9772b2bca67b7ec1e8ceeb3910d", size = 21237, upload-time = "2025-01-10T18:51:09.527Z" },
+]
+
+[[package]]
+name = "flask-seeder"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "flask" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1b/cf/d6167af60d6222d2898dca238a787ce47ce22a8afce41e5f1cf1023a31c3/Flask-Seeder-1.2.0.tar.gz", hash = "sha256:7fcfd2ad9aa0b7aad32b0d4684d2ee6cfcbc06a5ba1f8e3fe6ea07bf0f5b757c", size = 35178, upload-time = "2020-12-12T15:31:24.378Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/c5/ccfe8e7c4adbd48abc96f0c9061b89c136ef285fc849b445fa6aa19686b5/Flask_Seeder-1.2.0-py3-none-any.whl", hash = "sha256:8ffa20de8fdfe8af1852f994d5b8e41792faf8f90e0065e1c6b6f71e324cb7ea", size = 33518, upload-time = "2020-12-12T15:31:23.05Z" },
 ]
 
 [[package]]
