@@ -6,7 +6,6 @@
 # Uso:
 #   docker build --target dev   -t app:dev   .
 #   docker build --target test  -t app:test  .
-#   docker build --target e2e   -t app:e2e   .
 #   docker build --target prod  -t app:prod  .
 # -------------------------------------------------------------------------------------------------------------------------------
 
