@@ -101,7 +101,6 @@ dependencies = [
     { name = "flask" },
     { name = "flask-cors" },
     { name = "flask-migrate" },
-    { name = "flask-seeder" },
     { name = "flask-sqlalchemy" },
     { name = "gunicorn" },
     { name = "marshmallow" },
@@ -112,10 +111,12 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "flask-seeder" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "setuptools" },
 ]
 
 [package.metadata]
@@ -123,7 +124,6 @@ requires-dist = [
     { name = "flask", specifier = ">=3.0,<4.0" },
     { name = "flask-cors", specifier = ">=4.0" },
     { name = "flask-migrate", specifier = ">=4.0,<5.0" },
-    { name = "flask-seeder", specifier = ">=1.2.0" },
     { name = "flask-sqlalchemy", specifier = ">=3.1,<4.0" },
     { name = "gunicorn", specifier = ">=22.0" },
     { name = "marshmallow", specifier = ">=3.20,<4.0" },
@@ -134,10 +134,12 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "flask-seeder", specifier = ">=1.2.0" },
     { name = "mypy", specifier = ">=1.10" },
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-cov", specifier = ">=5.0" },
     { name = "ruff", specifier = ">=0.5" },
+    { name = "setuptools", specifier = "<82" },
 ]
 
 [[package]]
@@ -907,6 +909,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/b9/ab/d8e407669ffe5014429baf780c2df47e001968a6e4c17f615e2e7b13a9ba/ruff-0.17.4-py3-none-win32.whl", hash = "sha256:3971a78cba76298b284c8321e6d40d93045ed348bec5c369d85099efc97fb7cf", size = 9931993, upload-time = "2026-11-05T18:52:11.169Z" },
     { url = "https://files.pythonhosted.org/packages/bd/15/42af8a72d8946e3c9efd2bbf6641e462b6832783b0d043d63ef5b280ba7f/ruff-0.17.4-py3-none-win_amd64.whl", hash = "sha256:67c5a894fc054cf41f75f7afa24815de5a74329d97634126c2a1015740ff4e8c", size = 10292922, upload-time = "2026-11-05T18:52:13.436Z" },
     { url = "https://files.pythonhosted.org/packages/68/9e/f1dbffcfb8ff25dadbc21f87a8b73c3848abe4abada9d4b08ccef8bec40c/ruff-0.17.4-py3-none-win_arm64.whl", hash = "sha256:181ae38a9a8fb94925bf7d0794327b48d7fd7f4b50cfd84c0e999cc09ef8d131", size = 9889396, upload-time = "2026-11-05T18:52:15.549Z" },
+]
+
+[[package]]
+name = "setuptools"
+version = "81.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0d/1c/73e719955c59b8e424d015ab450f51c0af856ae46ea2da83eba51cc88de1/setuptools-81.0.0.tar.gz", hash = "sha256:487b53915f52501f0a79ccfd0c02c165ffe06631443a886740b91af4b7a5845a", size = 1198299, upload-time = "2026-02-06T21:10:39.601Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/e3/c164c88b2e5ce7b24d667b9bd83589cf4f3520d97cad01534cd3c4f55fdb/setuptools-81.0.0-py3-none-any.whl", hash = "sha256:fdd925d5c5d9f62e4b74b30d6dd7828ce236fd6ed998a08d81de62ce5a6310d6", size = 1062021, upload-time = "2026-02-06T21:10:37.175Z" },
 ]
 
 [[package]]

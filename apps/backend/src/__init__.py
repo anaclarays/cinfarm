@@ -1,8 +1,5 @@
 from flask import Flask
-from flask_seeder import FlaskSeeder
 from .extensions import db, migrate
-
-seeder = FlaskSeeder
 
 def create_app(config_object="src.config.Config"):
     app = Flask(__name__)
@@ -10,7 +7,6 @@ def create_app(config_object="src.config.Config"):
 
     db.init_app(app)
     migrate.init_app(app, db)
-    seeder.init_app(app, db)
 
     from .app_module import app_module
     from .core import register_module

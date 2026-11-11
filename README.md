@@ -39,11 +39,13 @@ cp apps/backend/.env.example apps/backend/.env
 make dev
 ```
 
-O backend está configurado para a porta `8000`, em <http://localhost:8000>. Não há documentação de API nem endpoint funcional de verificação no estado atual. O healthcheck do Compose tenta consultar essa mesma URL.
+O backend está configurado para a porta `8000`, em <http://localhost:8000>. Há uma básica documentação de API dos 2 endpoints de exemplo, os quais permitem a verificação no estado atual. O healthcheck do Compose tenta consultar essa mesma URL.
 
 O frontend está configurado para a porta `5173`, em <http://localhost:5173>. Não há documentação de System Design, UI/UX no estado atual. O healthcheck do Compose tenta consultar essa mesma URL.
 
-O Compose declara também os serviços `database`, `pgadmin4` e `nginx`, com imagens estáveis definidas e suas portas. Além disso, o build do backend referencia um `uv.lock` ausente. Portanto, o fluxo acima depende dessas pendências serem corrigidas.
+O Compose declara também os serviços `database`, `pgadmin4` e `nginx`, com imagens estáveis definidas e suas portas.
+
+Para visualização da interface do pgadmin acesse por meio da porta 16542, em <http://localhost:16542>. Caso você faça o compose e ele não aparece de imediato é recomendado que você aguarde um instante. Após isso acesse com suas credenciais.
 
 Para parar e remover os containers:
 
@@ -51,7 +53,7 @@ Para parar e remover os containers:
 make dev-clear
 ```
 
-Não há usuário, senha de aplicação, migrations ou seed definidos no repositório.
+Não há usuário, senha de aplicação ou seed definidos no repositório.
 
 ## Tecnologias
 
@@ -93,11 +95,11 @@ A arquitetura prevista é interface → API Flask → PostgreSQL. Essas camadas 
 
 ## Banco de dados
 
-O SGBD previsto é o PostgreSQL, indicado nas dependências e no `.env.example` do backend. Não foram encontrados modelo ER/EER, scripts SQL, migrations, seed, entidades ou relacionamentos implementados.
+O SGBD utilizado é o PostgreSQL junto ao pgadmin4. O objetivo é implementar uma aplicação capaz de traduzir o modelo EER construído na etapas anteriores do projeto a fim de utilidade prática.
 
 ## API
 
-Não há endpoints implementados ou documentação de API no repositório. O `apps/backend/src/__init__.py` está vazio.
+Existe 2 endpoints `[health/, person/]` implementados e documentados da API no repositório.
 
 ## Equipe
 

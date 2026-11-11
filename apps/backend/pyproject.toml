@@ -38,6 +38,7 @@ dev = [
     "ruff>=0.5",
     "mypy>=1.10",
     "flask-seeder>=1.2.0",
+	"setuptools<82"
 ]
 
 [tool.uv]
