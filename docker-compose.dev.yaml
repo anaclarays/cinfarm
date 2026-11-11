@@ -8,7 +8,11 @@ services:
           - '8000:8000'
         user: '${HOST_UID:-1000}:${HOST_GID:-1000}'
         environment:
-          DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD:-Password123!}@database:5432/db_cinfarm"
+          POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+          POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+          POSTGRES_HOST: database
+          POSTGRES_PORT: "5432"
         volumes:
           - ./apps/backend:/app
           - backend_volume:/app/.venv
@@ -51,9 +55,9 @@ services:
         image: postgres:17
         restart: unless-stopped
         environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-Password123!}"
-          POSTGRES_DB: db_cinfarm
+          POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+          POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}"
+          POSTGRES_DB: "${POSTGRES_DB:-db_cinfarm}"
         ports:
           - "15432:5432"
         volumes:
@@ -71,8 +75,8 @@ services:
         image: dpage/pgadmin4:9.19
         restart: unless-stopped
         environment:
-          PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL:-admin@cinfarm.com}"
-          PGADMIN_DEFAULT_PASSWORD:  "${PGADMIN_PASSWORD:-Password123!}"
+          PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL:?PGADMIN_EMAIL is required}"
+          PGADMIN_DEFAULT_PASSWORD:  "${PGADMIN_PASSWORD:?PGADMIN_PASSWORD is required}"
         volumes:
           - pgadmin-data:/var/lib/pgadmin
         ports:

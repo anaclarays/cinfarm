@@ -1,4 +1,14 @@
 # syntax=docker/dockerfile:1
+# -------------------------------------------------------------------------------------------------------------------------------
+# Dockerfile multi-stage para Backend e Python/Flask/UV
+# Stack utilizada: Python 
+#
+# Uso:
+#   docker build --target dev   -t app:dev   .
+#   docker build --target prod  -t app:prod  .
+# -------------------------------------------------------------------------------------------------------------------------------
+
+# ---------- Base ----------
 FROM ghcr.io/astral-sh/uv:python3.12-trixie-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -6,10 +16,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# ---------- Dependencies ----------
 FROM base AS dep
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
-ADD https://astral.sh/uv/install.sh /uv-installer.sh
-RUN sh /uv-installer.sh && rm /uv-installer.sh
 ENV PATH="/root/.local/bin/:$PATH"
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -21,16 +29,20 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 FROM dep AS dep-dev
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-install-project
-    
+
+# ---------- Development ----------
 FROM base AS dev
-ENV PATH="/app/.venv/bin:$PATH"
-COPY --from=dep-dev /root/.local/bin/uv /root/.local/bin/uvx /usr/local/bin/
-COPY --from=dep-dev --chown=1000:1000 /app/.venv /app/.venv
-
-COPY . .
-
+ARG HOST_UID=1000
+ARG HOST_GID=1000
+RUN groupadd --non-unique --gid ${HOST_GID} dev \
+	&& useradd --non-unique --uid ${HOST_UID} --gid ${HOST_GID} --create-home --shell /bin/bash dev
+ENV PATH="/app/.venv/bin:$PATH" \	
+	UV_LINK_MODE=copy
+COPY --from=dep-dev --chown=${HOST_UID}:${HOST_GID} /app/.venv /app/.venv
+COPY --chown=${HOST_UID}:${HOST_GID} . .
 CMD ["flask", "--app", "src", "run", "--debug", "--host", "0.0.0.0", "--port", "8000"]
 
+# ---------- Production ----------
 FROM base AS prod
 ENV PATH="/app/.venv/bin:$PATH"
 RUN groupadd --system app && useradd --system --gid app --create-home app
