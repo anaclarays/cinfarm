@@ -1,0 +1,83 @@
+# Exemplos de requisições - Estabelecimentos
+# VS Code: extensão "REST Client" -> clique em "Send Request" acima de cada bloco.
+# Rode de cima para baixo em um banco sem estabelecimentos (os ids 1 e 2 dependem disso).
+@base = http://localhost:8000
+
+### Cadastrar (espera 201)
+POST {{base}}/estabelecimentos
+Content-Type: application/json
+
+{
+  "nome": "UBS Centro",
+  "tipo_atendimento": "publico",
+  "logradouro": "Rua das Flores",
+  "numero": "100",
+  "bairro": "Centro",
+  "cidade": "Recife",
+  "estado": "PE",
+  "cep": "50000000"
+}
+
+### Cadastrar com complemento (espera 201)
+POST {{base}}/estabelecimentos
+Content-Type: application/json
+
+{
+  "nome": "Hospital Geral",
+  "tipo_atendimento": "privado",
+  "logradouro": "Av. Brasil",
+  "numero": "2500",
+  "complemento": "Bloco A",
+  "bairro": "Boa Vista",
+  "cidade": "Caruaru",
+  "estado": "PE",
+  "cep": "55000000"
+}
+
+### Erro: campos obrigatórios ausentes (espera 400)
+POST {{base}}/estabelecimentos
+Content-Type: application/json
+
+{ "nome": "Incompleto" }
+
+### Erro: tipo de atendimento inválido (espera 400)
+POST {{base}}/estabelecimentos
+Content-Type: application/json
+
+{
+  "nome": "Clínica X", "tipo_atendimento": "misto", "logradouro": "Rua C",
+  "bairro": "Centro", "cidade": "Recife", "estado": "PE", "cep": "50000000"
+}
+
+### Listar todos (espera 200)
+GET {{base}}/estabelecimentos
+
+### Listar com filtros: tipo_atendimento, estado, cidade, nome (espera 200)
+GET {{base}}/estabelecimentos?tipo_atendimento=privado&estado=PE
+
+### Consultar por id (espera 200)
+GET {{base}}/estabelecimentos/1
+
+### Consultar id inexistente (espera 404)
+GET {{base}}/estabelecimentos/999
+
+### Atualizar parcialmente - PATCH (espera 200)
+PATCH {{base}}/estabelecimentos/1
+Content-Type: application/json
+
+{ "bairro": "Boa Vista" }
+
+### Substituir todos os dados - PUT (espera 200)
+PUT {{base}}/estabelecimentos/1
+Content-Type: application/json
+
+{
+  "nome": "UBS Nova", "tipo_atendimento": "publico", "logradouro": "Rua B",
+  "bairro": "Centro", "cidade": "Recife", "estado": "PE", "cep": "50000001"
+}
+
+### Remover (espera 204)
+DELETE {{base}}/estabelecimentos/2
+
+### Remover id inexistente (espera 404)
+DELETE {{base}}/estabelecimentos/2
