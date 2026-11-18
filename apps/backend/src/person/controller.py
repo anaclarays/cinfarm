@@ -1,44 +1,20 @@
 from flask import Blueprint, request, url_for
 from flask.typing import ResponseReturnValue
+from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
 from ..extensions import db
 from .model import Person
+from .profile_service import apply_profile, serialize, serialize_detail
+from .profiles import Medication
+from .schema import MedicationSchema, PersonSchema
 
 bp = Blueprint("person", __name__, url_prefix="/person")
+medication_bp = Blueprint("medication", __name__, url_prefix="/medication")
 
-PERSON_FIELDS = {"name": 200, "telephone": 15}
-
-
-def serialize(person: Person) -> dict[str, str]:
-    return {"cpf": person.cpf, "name": person.name, "telephone": person.telephone}
-
-
-def read_person_fields(
-    *, create: bool = False, partial: bool = False
-) -> tuple[dict[str, str], dict[str, str]]:
-    payload = request.get_json(silent=True)
-    if not isinstance(payload, dict) or not payload:
-        return {}, {"body": "Envie um objeto JSON com os dados da pessoa."}
-
-    fields = {"cpf": 11, **PERSON_FIELDS} if create else PERSON_FIELDS
-    errors = {key: "Campo não permitido." for key in payload if key not in fields}
-    values = {}
-    for field, max_length in fields.items():
-        if partial and field not in payload:
-            continue
-
-        value = payload.get(field)
-        if not isinstance(value, str) or not value.strip() or "\0" in value:
-            errors[field] = "Informe um texto não vazio e válido."
-        elif field == "cpf" and not (len(value) == 11 and value.isascii() and value.isdigit()):
-            errors[field] = "Informe o CPF com 11 dígitos, sem pontuação."
-        elif len(value) > max_length:
-            errors[field] = f"Use no máximo {max_length} caracteres."
-        else:
-            values[field] = value
-
-    return values, errors
+create_schema = PersonSchema()
+update_schema = PersonSchema(exclude=("cpf",))
+medication_schema = MedicationSchema()
 
 
 @bp.get("/", strict_slashes=False)
@@ -52,42 +28,62 @@ def find_by_cpf(cpf: str) -> ResponseReturnValue:
     person = db.session.get(Person, cpf)
     if person is None:
         return {"error": "Pessoa não encontrada."}, 404
-
-    return serialize(person)
+    return serialize_detail(person)
 
 
 @bp.post("/", strict_slashes=False)
 def create() -> ResponseReturnValue:
-    values, errors = read_person_fields(create=True)
-    if errors:
-        return {"errors": errors}, 400
-
-    person = Person(cpf=values["cpf"], name=values["name"], telephone=values["telephone"])
-    db.session.add(person)
-    result = serialize(person)
     try:
+        values = create_schema.load(request.get_json(silent=True))
+        person = Person(
+            cpf=values.pop("cpf"), name=values.pop("name"), telephone=values.pop("telephone")
+        )
+        apply_profile(person, values, required=True)
+    except ValidationError as error:
+        return {"errors": error.messages}, 400
+
+    db.session.add(person)
+    try:
+        db.session.flush()
+        result = serialize_detail(person)
         db.session.commit()
     except IntegrityError:
         db.session.rollback()
-        return {"error": "Já existe uma pessoa cadastrada com esse CPF."}, 409
+        if db.session.get(Person, person.cpf) is not None:
+            return {"error": "Já existe uma pessoa cadastrada com esse CPF."}, 409
+        return {"error": "Um vínculo dos dados informados deixou de ser válido."}, 409
 
     return result, 201, {"Location": url_for("person.find_by_cpf", cpf=result["cpf"])}
 
 
 @bp.route("/<cpf>", methods=["PUT", "PATCH"])
 def update(cpf: str) -> ResponseReturnValue:
-    values, errors = read_person_fields(partial=request.method == "PATCH")
-    if errors:
-        return {"errors": errors}, 400
+    partial = request.method == "PATCH"
+    try:
+        values = update_schema.load(request.get_json(silent=True), partial=partial)
+        if not values:
+            raise ValidationError({"body": ["Informe pelo menos um campo para atualizar."]})
+    except ValidationError as error:
+        return {"errors": error.messages}, 400
 
     person = db.session.get(Person, cpf, with_for_update=True)
     if person is None:
         return {"error": "Pessoa não encontrada."}, 404
 
-    person.name = values.get("name", person.name)
-    person.telephone = values.get("telephone", person.telephone)
-    result = serialize(person)
-    db.session.commit()
+    try:
+        apply_profile(person, values, partial=partial)
+        person.name = values.get("name", person.name)
+        person.telephone = values.get("telephone", person.telephone)
+        db.session.flush()
+        result = serialize_detail(person)
+        db.session.commit()
+    except ValidationError as error:
+        db.session.rollback()
+        return {"errors": error.messages}, 400
+    except IntegrityError:
+        db.session.rollback()
+        return {"error": "Um vínculo dos dados informados deixou de ser válido."}, 409
+
     return result
 
 
@@ -105,3 +101,24 @@ def delete(cpf: str) -> ResponseReturnValue:
         return {"error": "A pessoa possui registros vinculados."}, 409
 
     return "", 204
+
+
+@medication_bp.get("/", strict_slashes=False)
+def list_medications() -> ResponseReturnValue:
+    medications = db.session.scalars(db.select(Medication).order_by(Medication.medicamento_id))
+    return {"medicamentos": medication_schema.dump(medications, many=True)}
+
+
+@medication_bp.post("/", strict_slashes=False)
+def create_medication() -> ResponseReturnValue:
+    try:
+        values = medication_schema.load(request.get_json(silent=True))
+    except ValidationError as error:
+        return {"errors": error.messages}, 400
+
+    medication = Medication(**values)
+    db.session.add(medication)
+    db.session.flush()
+    result = medication_schema.dump(medication)
+    db.session.commit()
+    return result, 201
