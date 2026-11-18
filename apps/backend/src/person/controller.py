@@ -122,3 +122,43 @@ def create_medication() -> ResponseReturnValue:
     result = medication_schema.dump(medication)
     db.session.commit()
     return result, 201
+
+
+@medication_bp.get("/<int:medicamento_id>", strict_slashes=False)
+def get_medication(medicamento_id: int) -> ResponseReturnValue:
+    medication = db.session.get(Medication, medicamento_id)
+    if medication is None:
+        return {"error": "Medicamento não encontrado."}, 404
+    return medication_schema.dump(medication)
+
+
+@medication_bp.put("/<int:medicamento_id>", strict_slashes=False)
+def update_medication(medicamento_id: int) -> ResponseReturnValue:
+    medication = db.session.get(Medication, medicamento_id)
+    if medication is None:
+        return {"error": "Medicamento não encontrado."}, 404
+
+    try:
+        values = medication_schema.load(request.get_json(silent=True))
+    except ValidationError as error:
+        return {"errors": error.messages}, 400
+
+    medication.nome_medicamento = values["nome_medicamento"]
+    db.session.commit()
+    return medication_schema.dump(medication)
+
+
+@medication_bp.delete("/<int:medicamento_id>", strict_slashes=False)
+def delete_medication(medicamento_id: int) -> ResponseReturnValue:
+    medication = db.session.get(Medication, medicamento_id)
+    if medication is None:
+        return {"error": "Medicamento não encontrado."}, 404
+
+    db.session.delete(medication)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return {"error": "O medicamento possui registros vinculados."}, 409
+
+    return "", 204
