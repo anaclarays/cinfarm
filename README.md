@@ -35,17 +35,84 @@ O fluxo pretendido é:
 ```bash
 git clone https://github.com/GabrielCassio/cinfarm.git
 cd cinfarm
-cp apps/backend/.env.example apps/backend/.env
-make dev
+cp .env.example .env
+make up
+make migration m="Initial migration by models."
 ```
 
-O backend está configurado para a porta `8000`, em <http://localhost:8000>. Há uma básica documentação de API dos 2 endpoints de exemplo, os quais permitem a verificação no estado atual. O healthcheck do Compose tenta consultar essa mesma URL.
+Antes do `make up`, abra o `.env` e ajuste as variáveis:
 
-O frontend está configurado para a porta `5173`, em <http://localhost:5173>. Não há documentação de System Design, UI/UX no estado atual. O healthcheck do Compose tenta consultar essa mesma URL.
+```env
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="yours_password"
+POSTGRES_DB="db_cinfarm"
+PGADMIN_EMAIL="email@cin.ufpe.br"
+PGADMIN_PASSWORD="yours_password"
+```
 
-O Compose declara também os serviços `database`, `pgadmin4` e `nginx`, com imagens estáveis definidas e suas portas.
+> ⚠️ Troque `yours_password` por senhas reais e nunca faça commit do `.env`.
 
-Para visualização da interface do pgadmin acesse por meio da porta 16542, em <http://localhost:16542>. Caso você faça o compose e ele não aparece de imediato é recomendado que você aguarde um instante. Após isso acesse com suas credenciais.
+## Serviços
+
+| Serviço | URL | Observações |
+|---|---|---|
+| Backend | <http://localhost:8000> | Documentação básica dos 2 endpoints de exemplo, que permitem verificar o estado atual. O healthcheck do Compose consulta essa mesma URL. |
+| Frontend | <http://localhost:5173> | Sem documentação de System Design ou UI/UX no estado atual. O healthcheck do Compose consulta essa mesma URL. |
+| pgAdmin | <http://localhost:16543> | Interface web para o PostgreSQL (veja abaixo). |
+| `database` | porta `5432` | PostgreSQL, banco `db_cinfarm`. |
+| `nginx` | — | Proxy reverso. |
+
+O Compose declara os serviços `database`, `pgadmin4` e `nginx` com imagens estáveis e portas definidas.
+
+## Configurando o pgAdmin
+
+### 1. Acessar a interface
+
+Após o `make up`, abra <http://localhost:16543>. Se a página não carregar de imediato, aguarde alguns instantes: o pgAdmin demora para inicializar.
+
+Faça login com as credenciais do `.env`:
+
+- **Email:** valor de `PGADMIN_EMAIL`
+- **Senha:** valor de `PGADMIN_PASSWORD`
+
+### 2. Registrar o servidor PostgreSQL
+
+1. No painel esquerdo, clique com o botão direito em **Servers** → **Register** → **Server...**
+2. Aba **General**
+   - **Name:** `cinfarm` (qualquer nome)
+3. Aba **Connection**
+   - **Host name/address:** `database`
+   - **Port:** `5432`
+   - **Maintenance database:** `db_cinfarm` (valor de `POSTGRES_DB`)
+   - **Username:** `postgres` (valor de `POSTGRES_USER`)
+   - **Password:** valor de `POSTGRES_PASSWORD`
+   - Marque **Save password** se desejar
+4. Clique em **Save**.
+
+> ℹ️ Use `database` como host, e não `localhost`. Dentro do container do pgAdmin, `localhost` é o próprio pgAdmin. O nome do serviço do Compose é resolvido pela rede interna do Docker.
+
+### 3. Visualizar as tabelas
+
+Depois de rodar `make migration`, navegue até:
+
+**Servers → cinfarm → Databases → db_cinfarm → Schemas → public → Tables**
+
+Para executar consultas SQL, clique com o botão direito em `db_cinfarm` → **Query Tool**.
+
+### Problemas comuns
+
+**Não consigo logar após mudar `PGADMIN_EMAIL` ou `PGADMIN_PASSWORD`**
+O pgAdmin só lê essas variáveis na primeira inicialização, pois as credenciais ficam salvas no volume. Remova os containers e o volume do pgAdmin e suba novamente.
+
+**Mudei `POSTGRES_PASSWORD` e a conexão falha**
+O mesmo vale para o PostgreSQL: as variáveis só são aplicadas quando o volume é criado. Apagar o volume do banco remove os dados.
+
+**`could not translate host name "database"`**
+O pgAdmin e o banco precisam estar na mesma rede do Compose. Suba tudo pelo mesmo arquivo Compose.
+
+**E-mail inválido ao subir o pgAdmin**
+O `PGADMIN_EMAIL` precisa ter formato válido (`usuario@dominio.com`).
+
 
 Para parar e remover os containers:
 
@@ -69,25 +136,31 @@ Não há usuário, senha de aplicação ou seed definidos no repositório.
 
 ```text
 .
+├── .github/
+│   └── PULL_REQUEST_TEMPLATE.md  # Modelo de Pull Request
 ├── apps/
 │   ├── backend/                 # Estrutura da API Flask
+│   │   ├── migrations           # Migrations dos models do banco de dados
 │   │   ├── .env.example         # Variáveis de ambiente de exemplo
 │   │   ├── Dockerfile            # Imagens de desenvolvimento e produção
 │   │   ├── pyproject.toml        # Dependências e ferramentas Python
 │   │   ├── README.md             # [Documentação do backend](apps/backend/README.md)
 │   │   └── src/
-│   │       └── __init__.py       # Pacote da aplicação, atualmente vazio
+│   │       ├── __init__.py       # Pacote da aplicação
+│   │       ├── core/             # Central de processamento de modulos
+│   │       ├── estabelecimento/  # Modulo estabelecimento
+│   │       ├── health/           #	Modulo de saude da api
+│   │       └── person/           # Modulo pessoa
 │   ├── frontend/                 # Estrutura do Frontend
 │   │   ├── public/			         # Assets estáticos do frontend
 │   │   ├── src/         					# Codebase do frontend
+│   │   │   └── assets/
 │   │   └── Dockerfile            # Imagens de desenvolvimento e produção
 │   └── nginx/                    # Dockerfile e configuração do Nginx
 ├── docker-compose.yaml           # Orquestração dos serviços
 ├── docker-compose.dev.yaml       # Orquestração dos serviços/conteiners de desenvolvimento
 ├── Makefile                      # Arquivo de automação, sem alvos
 ├── .dockerignore                 # Arquivos ignorados no build
-├── .github/
-│   └── PULL_REQUEST_TEMPLATE.md  # Modelo de Pull Request
 └── LICENSE                       # Licença do projeto
 ```
 
@@ -99,14 +172,14 @@ O SGBD utilizado é o PostgreSQL junto ao pgadmin4. O objetivo é implementar um
 
 ## API
 
-Existe 2 endpoints `[health/, person/]` implementados e documentados da API no repositório.
+Existe 3 endpoints `[health/, person/, estabelecimentos/]` implementados e documentados da API no repositório.
 
 ## Equipe
 
 | Nome | Função | GitHub |
 |---|---|---|
 | Ana Clara Souza Bizarria | dev | <@anaclarays> |
-| Byanca Hayally Candido de Souza | dev | <@> |
+| Byanca Hayally Candido de Souza | dev | <@byancasouzacs> |
 | Gabriel Cássio Gomes Cileiro | dev | <@GabrielCassio> |
 | Jaianny Karla de Oliveira Souza| dev | <@jaikarla> |
 | Luiz Miguel de Oliveira Siqueira | dev | <@oliveiraluizmiguel57-blip> |
