@@ -1,65 +1,59 @@
-# CInfarm-API
+# CInFarm API
 
-API REST em Python, construída com Flask e SQLAlchemy, para acesso ao banco PostgreSQL.
+API REST em Flask, com SQLAlchemy, PostgreSQL e migrations gerenciadas por Flask-Migrate/Alembic.
 
-## Estrutura
+## Módulos
 
-```text
-apps/backend/
-├── .env.example       # Modelo de variáveis de ambiente
-├── Dockerfile         # Imagens de desenvolvimento e produção
-├── pyproject.toml     # Metadados, dependências e ferramentas
-├── README.md          # Documentação do serviço
-└── src/
-    └── __init__.py    # Pacote Python da aplicação (atualmente vazio)
-```
+- `person`: pessoas, pacientes, profissionais, estagiários e dados de saúde.
+- `estabelecimento`: cadastro e consulta de estabelecimentos.
+- `medicamento`: cadastro, consulta, atualização e remoção de medicamentos.
+- `agendamento`: criação de agendamentos e medições clínicas.
+- `consulta`: criação e consulta de atendimentos vinculados a estabelecimento e responsável.
+- `health`: endpoint de verificação em `/health/`.
 
-## Principais componentes
-
-O pacote `src` contém apenas o arquivo `__init__.py`; não há módulos de aplicação implementados no momento.
+Os modelos ficam nos diretórios dos módulos em `src/`. As migrations ficam em `migrations/versions/`.
 
 ## Variáveis de ambiente
 
-Crie o arquivo local a partir do modelo:
+Para executar o Flask diretamente na máquina, copie `.env.example` para `.env` e configure os valores. Nesse arquivo, `POSTGRES_HOST=localhost` e `POSTGRES_PORT=15432` apontam para a porta publicada pelo Compose.
+
+O Docker Compose é iniciado na raiz do repositório e lê o `.env` da raiz para interpolar suas variáveis. O Compose de desenvolvimento passa ao backend as variáveis `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`, `POSTGRES_HOST=database` e `POSTGRES_PORT=5432`.
+
+O backend monta a conexão usando essas variáveis em `src/config.py`; ele não consome `DATABASE_URL`.
+
+## Executar com Docker
+
+Na raiz do repositório:
 
 ```bash
-cp .env.example .env
+docker compose -f docker-compose.dev.yaml up -d --build
+docker compose -f docker-compose.dev.yaml exec backend flask --app src db upgrade
 ```
 
-| Variável | Finalidade | Exemplo |
-|---|---|---|
-| `FLASK_DEBUG` | Ativa o modo de depuração | `1` |
-| `SECRET_KEY` | Chave secreta da aplicação | `troque-isto` |
-| `POSTGRES_USER` | Usuário do PostgreSQL | `cinfarm` |
-| `POSTGRES_PASSWORD` | Senha do PostgreSQL | `cinfarm` |
-| `POSTGRES_DB` | Nome do banco | `cinfarm` |
-| `DATABASE_URL` | URL de conexão com o banco | `******database:5432/cinfarm` |
+## Executar localmente
 
-## Como executar
-
-### Com Docker Compose
-
-Na raiz do repositório, suba o backend e o banco:
-
-```bash
-docker compose up backend database
-```
-
-A aplicação fica disponível em <http://localhost:8000>.
-
-### Localmente com uv
-
-Em `apps/backend`, instale as dependências e inicie o Flask:
+Em `apps/backend`, configure `.env` e execute:
 
 ```bash
 uv sync
 uv run flask --app src run --debug --host 0.0.0.0 --port 8000
 ```
 
-## Comandos úteis
+## Migrations e verificações
 
-| Comando | Finalidade |
-|---|---|
-| `uv run pytest` | Executa os testes com cobertura |
-| `uv run ruff check .` | Verifica lint |
-| `uv run mypy .` | Verifica tipos |
+```bash
+uv run flask --app src db heads
+uv run flask --app src db current
+uv run flask --app src db upgrade
+uv run flask --app src db check
+```
+
+## Testes e qualidade
+
+Os testes apagam e recriam as tabelas antes/depois de cada caso. Se executar a suíte em PostgreSQL, use exclusivamente `db_cinfarm_test` em `TEST_DATABASE_URL`; a configuração em `tests/conftest.py` rejeita outro banco PostgreSQL.
+
+```bash
+uv run pytest
+uv run ruff check .
+uv run mypy .
+```

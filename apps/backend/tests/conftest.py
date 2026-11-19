@@ -1,11 +1,23 @@
 import os
+from collections.abc import Iterator
 
 import pytest
+from flask.testing import FlaskClient
+from sqlalchemy.engine import make_url
 from sqlalchemy.pool import StaticPool
 
 # Por padrão os testes usam SQLite em memória (não precisam do Docker/PostgreSQL).
 # Para testar no PostgreSQL: TEST_DATABASE_URL=postgresql+psycopg://user:senha@host/db_teste
 TEST_URL = os.environ.get("TEST_DATABASE_URL", "sqlite://")
+TEST_DATABASE = make_url(TEST_URL)
+if (
+    TEST_DATABASE.drivername.startswith("postgres")
+    and TEST_DATABASE.database != "db_cinfarm_test"
+):
+    raise RuntimeError(
+        "TEST_DATABASE_URL deve apontar para o banco isolado db_cinfarm_test; "
+        "a suíte apaga e recria as tabelas durante os testes."
+    )
 
 
 class TestConfig:
@@ -19,7 +31,7 @@ class TestConfig:
 
 
 @pytest.fixture()
-def client():
+def client() -> Iterator[FlaskClient]:
     from src import create_app
     from src.extensions import db
 
