@@ -97,8 +97,3 @@ class PersonSchema(Schema):
     paciente = fields.Raw()
     profissional_saude = fields.Raw()
     estagiario = fields.Raw()
-
-
-class MedicationSchema(Schema):
-    medicamento_id = fields.Integer(dump_only=True)
-    nome_medicamento = string(200)

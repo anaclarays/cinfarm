@@ -3,6 +3,7 @@ from typing import Any
 from marshmallow import ValidationError
 
 from ..extensions import db
+from ..medicamento.model import Medication
 from .model import Person
 from .profiles import (
     AllergicReaction,
@@ -10,7 +11,6 @@ from .profiles import (
     HealthCondition,
     HealthProfessional,
     Intern,
-    Medication,
     Patient,
 )
 from .schema import HealthProfessionalSchema, InternSchema, PatientSchema
