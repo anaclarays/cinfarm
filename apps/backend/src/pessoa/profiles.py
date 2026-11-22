@@ -6,7 +6,7 @@ from decimal import Decimal
 from sqlalchemy import ForeignKey, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..extensions import db
+from ..conf_database import db
 
 
 class CareProvider(db.Model):

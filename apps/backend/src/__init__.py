@@ -1,15 +1,18 @@
 from flask import Flask
-from .extensions import db, migrate
+from .conf_database import db, migrate
+from .conf_swagger import api, build_swagger
+from .core import register_module
+from .app_module import app_module
 
-def create_app(config_object="src.config.Config"):
+
+def create_app(config_object="src.conf_flask.Config"):
     app = Flask(__name__)
     app.config.from_object(config_object)
-
+    
     db.init_app(app)
     migrate.init_app(app, db)
-
-    from .app_module import app_module
-    from .core import register_module
-    register_module(app, app_module)
+    build_swagger(app)
+    
+    register_module(api, app_module)
             
     return app

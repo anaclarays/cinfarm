@@ -33,7 +33,7 @@ class TestConfig:
 @pytest.fixture()
 def client() -> Iterator[FlaskClient]:
     from src import create_app
-    from src.extensions import db
+    from src.conf_database import db
 
     app = create_app(TestConfig)
     with app.app_context():

@@ -1,10 +1,10 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from ..extensions import Base
+from ..conf_database import db
 
 
-class Consulta(Base):
+class ConsultaModel(db.Model):
     __tablename__ = "consulta"
 
     consulta_id: Mapped[int] = mapped_column(primary_key=True)

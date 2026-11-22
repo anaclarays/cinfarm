@@ -1,5 +1,11 @@
 from .controller import bp
-from .model import Agendamento, MedicaoClinica, TipoParametro
+from .model import AgendamentoModel, MedicaoClinicaModel, TipoParametroModel
 from .module import agendamento_module
 
-__all__ = ["Agendamento", "MedicaoClinica", "TipoParametro", "agendamento_module", "bp"]
+__all__ = [
+    "bp",
+    "AgendamentoModel",
+    "MedicaoClinicaModel",
+    "TipoParametroModel",
+    "agendamento_module"
+]

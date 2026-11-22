@@ -1,13 +1,27 @@
 from typing import Any
 
-from flask import Blueprint, request, url_for
+from flask import request, url_for
 from flask.typing import ResponseReturnValue
+from flask_smorest import Blueprint
+from flask.views import MethodView
 from sqlalchemy.exc import IntegrityError
 
-from ..extensions import db
-from .model import Estabelecimento
+from ..conf_database import db
+from .model import EstabelecimentoModel
+from .schema import (
+    EstabelecimentoSchema, 
+    EstabelecimentoFiltrosSchema, 
+    EstabelecimentoListaSchema,
+    ErroSchema,
+    ErrosSchema
+)
 
-bp = Blueprint("estabelecimento", __name__, url_prefix="/estabelecimentos")
+bp = Blueprint(
+    "estabelecimento", 
+    __name__, 
+    url_prefix="/estabelecimento",
+    description="Rota de estabelecimentos"
+)
 
 # campo -> tamanho máximo
 REQUIRED_FIELDS = {
@@ -23,9 +37,12 @@ OPTIONAL_FIELDS = {"numero": 10, "complemento": 100}
 ALL_FIELDS = {**REQUIRED_FIELDS, **OPTIONAL_FIELDS}
 TIPOS_ATENDIMENTO = ("publico", "privado")
 FILTERS = ("nome", "cidade", "estado", "tipo_atendimento")
+QUERY_PARAMS = [
+    {"name": f, "in": "query", "schema": {"type": "string"}} for f in FILTERS
+]
 
 
-def serialize(e: Estabelecimento) -> dict[str, Any]:
+def serialize(e: EstabelecimentoModel) -> dict[str, Any]:
     return {
         "estabelecimento_id": e.estabelecimento_id,
         "nome": e.nome,
@@ -89,76 +106,101 @@ def read_fields(*, partial: bool = False) -> tuple[dict[str, str | None], dict[s
     return values, errors
 
 
-@bp.get("/", strict_slashes=False)
-def find_all() -> ResponseReturnValue:
-    query = db.select(Estabelecimento).order_by(Estabelecimento.estabelecimento_id)
-    for key in request.args:
-        if key not in FILTERS:
-            return {"error": f"Filtro não permitido: {key}."}, 400
-    if nome := request.args.get("nome"):
-        query = query.where(Estabelecimento.nome.ilike(f"%{nome}%"))
-    if cidade := request.args.get("cidade"):
-        query = query.where(Estabelecimento.cidade.ilike(cidade))
-    if estado := request.args.get("estado"):
-        query = query.where(Estabelecimento.estado == estado.upper())
-    if tipo := request.args.get("tipo_atendimento"):
-        query = query.where(Estabelecimento.tipo_atendimento == tipo)
+@bp.route("/", strict_slashes=False)
+class EstabelecimentoList(MethodView):
 
-    items = db.session.scalars(query)
-    return {"estabelecimentos": [serialize(e) for e in items]}
+    @bp.doc(summary="Lista estabelecimentos", parameters=QUERY_PARAMS)
+    @bp.alt_response(200, schema=EstabelecimentoListaSchema, description="Lista de estabelecimentos")
+    @bp.alt_response(400, schema=ErroSchema, description="Filtro não permitido")
+    def get(self) -> ResponseReturnValue:
+        query = db.select(EstabelecimentoModel).order_by(EstabelecimentoModel.estabelecimento_id)
+        for key in request.args:
+            if key not in FILTERS:
+                return {"error": f"Filtro não permitido: {key}."}, 400
+        if nome := request.args.get("nome"):
+            query = query.where(EstabelecimentoModel.nome.ilike(f"%{nome}%"))
+        if cidade := request.args.get("cidade"):
+            query = query.where(EstabelecimentoModel.cidade.ilike(cidade))
+        if estado := request.args.get("estado"):
+            query = query.where(EstabelecimentoModel.estado == estado.upper())
+        if tipo := request.args.get("tipo_atendimento"):
+            query = query.where(EstabelecimentoModel.tipo_atendimento == tipo)
+    
+        items = db.session.scalars(query)
+        return {"estabelecimentos": [serialize(e) for e in items]}
 
-
-@bp.get("/<int:estabelecimento_id>")
-def find_by_id(estabelecimento_id: int) -> ResponseReturnValue:
-    estabelecimento = db.session.get(Estabelecimento, estabelecimento_id)
-    if estabelecimento is None:
-        return {"error": "Estabelecimento não encontrado."}, 404
-
-    return serialize(estabelecimento)
-
-
-@bp.post("/", strict_slashes=False)
-def create() -> ResponseReturnValue:
-    values, errors = read_fields()
-    if errors:
-        return {"errors": errors}, 400
-
-    estabelecimento = Estabelecimento(**values)
-    db.session.add(estabelecimento)
-    db.session.commit()
-    result = serialize(estabelecimento)
-    new_id = result["estabelecimento_id"]
-    location = url_for("estabelecimento.find_by_id", estabelecimento_id=new_id)
-    return result, 201, {"Location": location}
-
-
-@bp.route("/<int:estabelecimento_id>", methods=["PUT", "PATCH"])
-def update(estabelecimento_id: int) -> ResponseReturnValue:
-    values, errors = read_fields(partial=request.method == "PATCH")
-    if errors:
-        return {"errors": errors}, 400
-
-    estabelecimento = db.session.get(Estabelecimento, estabelecimento_id, with_for_update=True)
-    if estabelecimento is None:
-        return {"error": "Estabelecimento não encontrado."}, 404
-
-    for field, value in values.items():
-        setattr(estabelecimento, field, value)
-    db.session.commit()
-    return serialize(estabelecimento)
-
-
-@bp.delete("/<int:estabelecimento_id>")
-def delete(estabelecimento_id: int) -> ResponseReturnValue:
-    estabelecimento = db.session.get(Estabelecimento, estabelecimento_id, with_for_update=True)
-    if estabelecimento is None:
-        return {"error": "Estabelecimento não encontrado."}, 404
-
-    db.session.delete(estabelecimento)
-    try:
+    @bp.doc(summary="Cria um estabelecimento")
+    @bp.alt_response(201, schema=EstabelecimentoSchema, description="Criado (header Location com a URL)")
+    @bp.alt_response(400, schema=ErrosSchema, description="Dados inválidos")
+    def post(self) -> ResponseReturnValue:
+        values, errors = read_fields()
+        if errors:
+            return {"errors": errors}, 400
+    
+        estabelecimento = EstabelecimentoModel(**values)
+        db.session.add(estabelecimento)
         db.session.commit()
-    except IntegrityError:
-        db.session.rollback()
-        return {"error": "O estabelecimento possui consultas vinculadas."}, 409
+        result = serialize(estabelecimento)
+        new_id = result["estabelecimento_id"]
+        location = url_for("estabelecimento.find_by_id", estabelecimento_id=new_id)
+        return result, 201, {"Location": location}
 
-    return "", 204
+
+@bp.route("/<int:estabelecimento_id>", strict_slashes=False, endpoint="find_by_id")
+class Estabelecimento(MethodView):
+
+    @bp.doc(summary="Busca um estabelecimento pelo ID")
+    @bp.alt_response(200, schema=EstabelecimentoSchema, description="Estabelecimento")
+    @bp.alt_response(404, schema=ErroSchema, description="Não encontrado")
+    def get(self, estabelecimento_id: int) -> ResponseReturnValue:
+        estabelecimento = db.session.get(EstabelecimentoModel, estabelecimento_id)
+        if estabelecimento is None:
+            return {"error": "Estabelecimento não encontrado."}, 404
+    
+        return serialize(estabelecimento)
+    
+    def _update(self, estabelecimento_id: int) -> ResponseReturnValue:
+        values, errors = read_fields(partial=request.method == "PATCH")
+        if errors:
+            return {"errors": errors}, 400
+    
+        estabelecimento = db.session.get(EstabelecimentoModel, estabelecimento_id, with_for_update=True)
+        if estabelecimento is None:
+            return {"error": "Estabelecimento não encontrado."}, 404
+    
+        for field, value in values.items():
+            setattr(estabelecimento, field, value)
+        db.session.commit()
+        return serialize(estabelecimento)
+
+    @bp.doc(summary="Substitui um estabelecimento")
+    @bp.alt_response(200, schema=EstabelecimentoSchema, description="Atualizado")
+    @bp.alt_response(400, schema=ErrosSchema, description="Dados inválidos")
+    @bp.alt_response(404, schema=ErroSchema, description="Não encontrado")
+    def put(self, estabelecimento_id: int) -> ResponseReturnValue:
+        return self._update(estabelecimento_id)
+
+    @bp.doc(summary="Atualiza parcialmente um estabelecimento")
+    @bp.alt_response(200, schema=EstabelecimentoSchema, description="Atualizado")
+    @bp.alt_response(400, schema=ErrosSchema, description="Dados inválidos")
+    @bp.alt_response(404, schema=ErroSchema, description="Não encontrado")
+    def patch(self, estabelecimento_id: int) -> ResponseReturnValue:
+        return self._update(estabelecimento_id)
+        
+    @bp.doc(summary="Remove um estabelecimento")    
+    @bp.alt_response(204, description="Removido")
+    @bp.alt_response(404, schema=ErroSchema, description="Não encontrado")
+    @bp.alt_response(409, schema=ErroSchema, description="Possui consultas vinculadas")
+    def delete(self, estabelecimento_id: int) -> ResponseReturnValue:
+        estabelecimento = db.session.get(EstabelecimentoModel, estabelecimento_id, with_for_update=True)
+        if estabelecimento is None:
+            return {"error": "Estabelecimento não encontrado."}, 404
+    
+        db.session.delete(estabelecimento)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return {"error": "O estabelecimento possui consultas vinculadas."}, 409
+    
+        return "", 204

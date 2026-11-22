@@ -5,10 +5,10 @@ from datetime import date, datetime, time
 from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..extensions import db
+from ..conf_database import db
 
 
-class TipoParametro(db.Model):
+class TipoParametroModel(db.Model):
     __tablename__ = "tipo_parametro"
 
     parametro_id: Mapped[int] = mapped_column(primary_key=True)
@@ -17,7 +17,7 @@ class TipoParametro(db.Model):
     faixa_referencia: Mapped[str] = mapped_column(String(200))
 
 
-class Agendamento(db.Model):
+class AgendamentoModel(db.Model):
     __tablename__ = "agendamento"
 
     agendamento_id: Mapped[int] = mapped_column(primary_key=True)
@@ -27,12 +27,12 @@ class Agendamento(db.Model):
     status: Mapped[str] = mapped_column(String(50))
     observacoes: Mapped[str | None] = mapped_column(Text)
 
-    medicoes_clinicas: Mapped[list[MedicaoClinica]] = relationship(
-        cascade="all, delete-orphan", order_by="MedicaoClinica.medicao_id"
+    medicoes_clinicas: Mapped[list[MedicaoClinicaModel]] = relationship(
+        cascade="all, delete-orphan", order_by="MedicaoClinicaModel.medicao_id"
     )
 
 
-class MedicaoClinica(db.Model):
+class MedicaoClinicaModel(db.Model):
     __tablename__ = "medicao_clinica"
 
     medicao_id: Mapped[int] = mapped_column(primary_key=True)
@@ -43,4 +43,4 @@ class MedicaoClinica(db.Model):
     data_medicao: Mapped[date]
     hora_medicao: Mapped[time]
 
-    tipo_parametro: Mapped[TipoParametro] = relationship()
+    tipo_parametro: Mapped[TipoParametroModel] = relationship()

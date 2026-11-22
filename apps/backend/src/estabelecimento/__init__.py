@@ -1,5 +1,5 @@
 from .controller import bp
-from .model import Estabelecimento
+from .model import EstabelecimentoModel
 from .module import estabelecimento_module
 
-__all__ = ["Estabelecimento", "bp", "estabelecimento_module"]
+__all__ = ["bp", "EstabelecimentoModel", "estabelecimento_module"]

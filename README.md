@@ -35,7 +35,11 @@ git clone https://github.com/GabrielCassio/cinfarm.git
 cd cinfarm
 cp .env.example .env
 make up
+<<<<<<< HEAD
+make migration m="Initial migration by models."
+=======
 make upgrade
+>>>>>>> 7d790e0110f789acbb0f5d2d7dfcbe70bc632632
 ```
 
 Antes do `make up`, abra o `.env` e ajuste as variáveis:
@@ -173,7 +177,7 @@ O SGBD utilizado é o PostgreSQL junto ao pgadmin4. O objetivo é implementar um
 
 ## API
 
-Existe 3 endpoints `[health/, pessoa/, estabelecimentos/]` implementados e documentados da API no repositório.
+Os endpoints existentes são: `[health/, agendamento/, consulta/, estabelecimentos/, medicamento/, pessoa/]` implementados e documentados da API com swagger. para acessá-lo consulte em: <http://localhost:8000/api/docs> ou <http://localhost:8000/api/openapi.json>.
 
 ## Equipe
 

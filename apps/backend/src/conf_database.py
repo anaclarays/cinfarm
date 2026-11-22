@@ -1,5 +1,10 @@
 import os
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy  import MetaData
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.engine import URL
+
 
 def build_database_uri(database: str | None = None) -> URL:
     return URL.create(
@@ -11,11 +16,17 @@ def build_database_uri(database: str | None = None) -> URL:
         database=database or os.environ["POSTGRES_DB"],
     )
 
-class Config:
+class DatabaseConfig:
     SQLALCHEMY_DATABASE_URI = build_database_uri()
 
-class TestConfig(Config):
+class TestConfig(DatabaseConfig):
     SQLALCHEMY_DATABASE_URI = build_database_uri(
         os.environ.get("POSTGRES_TEST_DB", "db_cinfarm_test")
     )
     TESTING = True
+
+class Base(DeclarativeBase):
+    metadata = MetaData()
+
+db = SQLAlchemy(model_class=Base)
+migrate = Migrate()
