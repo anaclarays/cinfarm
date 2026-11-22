@@ -1,6 +1,6 @@
 # CInfarm
 
-Projeto acadêmico de Banco de Dados para desenvolver uma aplicação web integrada com API REST, PostgreSQL e Flask.
+Projeto acadêmico de Banco de Dados para desenvolver uma aplicação web integrada com API REST, PostgreSQL e Flask. Em conjunto, foi desenvolvido também uma interface interativa em NodeJs e React.
 
 ## Sumário
 
@@ -22,22 +22,24 @@ A solução está sendo estruturada com um backend que deverá expor operações
 
 ## Requisitos do projeto
 
-- **Banco de dados modelado**, com entidades, relacionamentos e integridade referencial — **pendente**.
-- **Backend com API CRUD**, conectado ao banco de dados — **parcial**: a estrutura Flask está prevista, mas ainda não há rotas ou modelos implementados.
-- **Interface gráfica**, comunicando-se exclusivamente pelos endpoints do backend — **pendente**: nenhum frontend foi encontrado.
+- **Banco de dados modelado**, com entidades, relacionamentos e integridade referencial — **completo**.
+- **Backend com API CRUD**, conectado ao banco de dados — **completo**: a estrutura Flask está prevista, mas ainda não há rotas ou modelos implementados.
+- **Interface gráfica**, comunicando-se exclusivamente pelos endpoints do backend — **parcial**: nenhum frontend foi encontrado.
 
-## Execução rápida
+## Executar o ambiente de desenvolvimento
 
-Pré-requisitos: Docker e Docker Compose.
-
-O fluxo pretendido é:
+Pré-requisitos: Docker e Docker Compose. Na raiz do repositório, crie o arquivo de configuração local e inicie os serviços:
 
 ```bash
 git clone https://github.com/GabrielCassio/cinfarm.git
 cd cinfarm
 cp .env.example .env
 make up
+<<<<<<< HEAD
 make migration m="Initial migration by models."
+=======
+make upgrade
+>>>>>>> 7d790e0110f789acbb0f5d2d7dfcbe70bc632632
 ```
 
 Antes do `make up`, abra o `.env` e ajuste as variáveis:
@@ -56,7 +58,7 @@ PGADMIN_PASSWORD="yours_password"
 
 | Serviço | URL | Observações |
 |---|---|---|
-| Backend | <http://localhost:8000> | Documentação básica dos 2 endpoints de exemplo, que permitem verificar o estado atual. O healthcheck do Compose consulta essa mesma URL. |
+| Backend | <http://localhost:8000> | Documentação básica de todos endpoints utilizados, que permitem verificar o estado atual. O healthcheck do Compose consulta essa mesma URL. |
 | Frontend | <http://localhost:5173> | Sem documentação de System Design ou UI/UX no estado atual. O healthcheck do Compose consulta essa mesma URL. |
 | pgAdmin | <http://localhost:16543> | Interface web para o PostgreSQL (veja abaixo). |
 | `database` | porta `5432` | PostgreSQL, banco `db_cinfarm`. |
@@ -148,9 +150,12 @@ Não há usuário, senha de aplicação ou seed definidos no repositório.
 │   │   └── src/
 │   │       ├── __init__.py       # Pacote da aplicação
 │   │       ├── core/             # Central de processamento de modulos
-│   │       ├── estabelecimento/  # Modulo estabelecimento
 │   │       ├── health/           #	Modulo de saude da api
-│   │       └── person/           # Modulo pessoa
+│   │       ├── agendamento/      #	Modulo de agendamentos
+│   │       ├── consulta/        	#	Modulo de consultas 
+│   │       ├── estabelecimento/  # Modulo estabelecimentos
+│   │       ├── medicamento/      #	Modulo de medicamentos
+│   │       └── pessoa/           # Modulo pessoa
 │   ├── frontend/                 # Estrutura do Frontend
 │   │   ├── public/			         # Assets estáticos do frontend
 │   │   ├── src/         					# Codebase do frontend
@@ -172,7 +177,7 @@ O SGBD utilizado é o PostgreSQL junto ao pgadmin4. O objetivo é implementar um
 
 ## API
 
-Existe 3 endpoints `[health/, person/, estabelecimentos/]` implementados e documentados da API no repositório.
+Os endpoints existentes são: `[health/, agendamento/, consulta/, estabelecimentos/, medicamento/, pessoa/]` implementados e documentados da API com swagger. para acessá-lo consulte em: <http://localhost:8000/api/docs> ou <http://localhost:8000/api/openapi.json>.
 
 ## Equipe
 
@@ -186,7 +191,6 @@ Existe 3 endpoints `[health/, person/, estabelecimentos/]` implementados e docum
 | Raiana Lais Pereira Donato | dev | <@raianalais> |
 | Samara Petrilly de Arruda Barbosa| dev | <@samarapetrilly> |
 | Samuel Renan Mendes Umbelino do Monte | dev | <@Samukarn> |
-
 
 ## Licença
 
