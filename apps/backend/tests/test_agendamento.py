@@ -3,10 +3,10 @@ from decimal import Decimal
 
 import pytest
 
-from src.agendamento.model import Agendamento, MedicaoClinica, TipoParametro
+from src.agendamento.model import AgendamentoModel, MedicaoClinicaModel, TipoParametroModel
 from src.extensions import db
-from src.person.model import Person
-from src.person.profiles import CareProvider, HealthProfessional, Patient
+from src.pessoa.model import PessoaModel
+from src.pessoa.profiles import CareProvider, HealthProfessional, Patient
 
 URL = "/agendamentos/"
 
@@ -49,7 +49,7 @@ def pessoas(client):
     db.session.add(care)
     db.session.flush()
 
-    p_paciente = Person(cpf="12345678901", name="Maria Silva", telephone="81999990001")
+    p_paciente = PessoaModel(cpf="12345678901", name="Maria Silva", telephone="81999990001")
     paciente = Patient(
         cpf="12345678901",
         rg="1234567",
@@ -72,7 +72,7 @@ def pessoas(client):
         relacao_emergencia="Irmão",
         possui_plano_saude=False,
     )
-    p_prof = Person(cpf="98765432100", name="Dr. Carlos", telephone="81999990003")
+    p_prof = PessoaModel(cpf="98765432100", name="Dr. Carlos", telephone="81999990003")
     prof = HealthProfessional(
         cpf="98765432100",
         instituicao_vinculo="Hospital Central",
@@ -138,15 +138,15 @@ def test_cadastrar_retorna_201_com_dados_completos(client, pessoas):
 
 def test_cadastrar_persistencia_no_banco(client, pessoas):
     criar(client)
-    agendamento = db.session.get(Agendamento, 1)
+    agendamento = db.session.get(AgendamentoModel, 1)
     assert agendamento is not None
     assert agendamento.paciente_cpf == pessoas["paciente_cpf"]
     assert len(agendamento.medicoes_clinicas) == 2
 
-    medicoes = db.session.scalars(db.select(MedicaoClinica)).all()
+    medicoes = db.session.scalars(db.select(MedicaoClinicaModel)).all()
     assert len(medicoes) == 2
 
-    tipos = db.session.scalars(db.select(TipoParametro)).all()
+    tipos = db.session.scalars(db.select(TipoParametroModel)).all()
     assert len(tipos) == 2
 
 
@@ -187,9 +187,9 @@ def test_cadastrar_profissional_saude_medicao_inexistente_retorna_404(client, pe
     assert "error" in r.get_json()
     assert cpf_inexistente in r.get_json()["error"]
 
-    assert len(db.session.scalars(db.select(Agendamento)).all()) == 0
-    assert len(db.session.scalars(db.select(MedicaoClinica)).all()) == 0
-    assert len(db.session.scalars(db.select(TipoParametro)).all()) == 0
+    assert len(db.session.scalars(db.select(AgendamentoModel)).all()) == 0
+    assert len(db.session.scalars(db.select(MedicaoClinicaModel)).all()) == 0
+    assert len(db.session.scalars(db.select(TipoParametroModel)).all()) == 0
 
 
 def test_cadastrar_medicoes_clinicas_vazia(client, pessoas):
