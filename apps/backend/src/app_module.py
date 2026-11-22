@@ -1,9 +1,9 @@
-from .agendamento import agendamento_module
 from .core import Module
+from .agendamento import agendamento_module
 from .estabelecimento import estabelecimento_module
 from .health import health_module
 from .medicamento import medicamento_module
-from .person import person_module
+from .pessoa import pessoa_module
 
 app_module = Module(
     name="app", 
@@ -12,6 +12,6 @@ app_module = Module(
         agendamento_module, 
         estabelecimento_module, 
         medicamento_module, 
-        person_module
+        pessoa_module
     ]
 )

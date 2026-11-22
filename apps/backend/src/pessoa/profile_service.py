@@ -3,9 +3,9 @@ from typing import Any
 from marshmallow import ValidationError
 
 from ..conf_database import db
-from ..medicamento.model import Medication
+from ..medicamento.model import MedicamentoModel
 
-from .model import Person
+from .model import PessoaModel
 from .profiles import (
     AllergicReaction,
     CareProvider,
@@ -23,11 +23,11 @@ PROFILES = {
 }
 
 
-def serialize(person: Person) -> dict[str, str]:
+def serialize(person: PessoaModel) -> dict[str, str]:
     return {"cpf": person.cpf, "name": person.name, "telephone": person.telephone}
 
 
-def serialize_detail(person: Person) -> dict[str, Any]:
+def serialize_detail(person: PessoaModel) -> dict[str, Any]:
     result = serialize(person)
     for key, (_, schema) in PROFILES.items():
         if (profile := getattr(person, key)) is not None:
@@ -36,7 +36,7 @@ def serialize_detail(person: Person) -> dict[str, Any]:
 
 
 def apply_profile(
-    person: Person, data: dict[str, Any], *, required: bool = False, partial: bool = False
+    person: PessoaModel, data: dict[str, Any], *, required: bool = False, partial: bool = False
 ) -> None:
     supplied = [key for key in PROFILES if key in data]
     if len(supplied) > 1 or (required and not supplied):
@@ -85,7 +85,7 @@ def prepare_patient(values: dict[str, Any], patient: Patient | None) -> None:
         existing_ids = (
             set(
                 db.session.scalars(
-                    db.select(Medication.medicamento_id).where(Medication.medicamento_id.in_(ids))
+                    db.select(MedicationModel.medicamento_id).where(MedicationModel.medicamento_id.in_(ids))
                 )
             )
             if ids

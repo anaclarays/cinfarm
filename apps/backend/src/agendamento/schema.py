@@ -19,18 +19,18 @@ def _cpf() -> fields.String:
     )
 
 
-class TipoParametroSchema(Schema):
+class TipoParametroModelSchema(Schema):
     tipo = _str(200)
     unidade_medida = _str(100)
     faixa_referencia = _str(200)
 
 
-class MedicaoClinicaSchema(Schema):
+class MedicaoClinicaModelSchema(Schema):
     profissional_saude_cpf = _cpf()
     valor = _str(200)
     data_medicao = fields.Date(required=True)
     hora_medicao = fields.Time(required=True)
-    tipo_parametro = fields.Nested(TipoParametroSchema, required=True)
+    tipo_parametro = fields.Nested(TipoParametroModelSchema, required=True)
 
 
 def _at_least_one(value: list[object]) -> None:
@@ -45,7 +45,15 @@ class AgendamentoSchema(Schema):
     status = _str(50)
     observacoes = _str(2000, required=False)
     medicoes_clinicas = fields.List(
-        fields.Nested(MedicaoClinicaSchema),
+        fields.Nested(MedicaoClinicaModelSchema),
         required=True,
         validate=_at_least_one,
     )
+
+class ErroSchema(Schema):
+    error = fields.String()
+
+
+class ErroValidacaoSchema(Schema):
+    error = fields.String()
+    errors = fields.Dict()

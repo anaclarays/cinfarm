@@ -1,5 +1,9 @@
-from flask import Blueprint, Flask
+from flask_smorest import Api
+from flask_smorest import Blueprint
+
 from dataclasses import dataclass, field
+
+API_PREFIX = "/api"
 
 @dataclass(eq=False)
 class Module:
@@ -7,7 +11,7 @@ class Module:
     controllers: list[Blueprint] = field(default_factory=list)    
     imports: list["Module"] = field(default_factory=list)
 
-def register_module(app: Flask, module: Module, _seen: set | None = None) -> None:
+def register_module(app: Api, module: Module, _seen: set | None = None) -> None:
     seen = _seen if _seen is not None else set()
     if module is seen:
         return
@@ -16,5 +20,5 @@ def register_module(app: Flask, module: Module, _seen: set | None = None) -> Non
     for imported in module.imports:
         register_module(app, imported, seen)
 
-    for  bp in module.controllers:
-        app.register_blueprint(bp)
+    for bp in module.controllers:
+        app.register_blueprint(bp, url_prefix=f"{API_PREFIX}{bp.url_prefix or ''}")

@@ -7,7 +7,7 @@ from ..conf_database import db
 from .profiles import HealthProfessional, Intern, Patient
 
 
-class Person(db.Model):
+class PessoaModel(db.Model):
     __tablename__ = "person"
 
     cpf: Mapped[str] = mapped_column(primary_key=True)
@@ -21,4 +21,4 @@ class Person(db.Model):
     estagiario: Mapped[Intern | None] = relationship(cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
-        return f"Person(id={self.cpf!r}, name={self.name!r}, telephone={self.telephone!r})"
+        return f"PessoaModel(id={self.cpf!r}, name={self.name!r}, telephone={self.telephone!r})"

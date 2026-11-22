@@ -2,7 +2,9 @@ from datetime import date
 from decimal import Decimal
 
 from marshmallow import Schema, ValidationError, fields, validate
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
+from .model import PessoaModel
 
 def string(max_length: int, *, required: bool = True) -> fields.String:
     return fields.String(
@@ -87,7 +89,11 @@ class HealthProfessionalSchema(Schema):
     responsavel_atendimento_id = fields.Integer(dump_only=True)
 
 
-class PersonSchema(Schema):
+class PessoaSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = PessoaModel
+        load_instance = False
+
     cpf = fields.String(
         required=True,
         validate=validate.Regexp(r"\A[0-9]{11}\Z", error="Informe o CPF com 11 dígitos."),
@@ -97,3 +103,12 @@ class PersonSchema(Schema):
     paciente = fields.Raw()
     profissional_saude = fields.Raw()
     estagiario = fields.Raw()
+
+class PessoaListaSchema(Schema):
+    pessoas = fields.List(fields.Nested(PessoaSchema))
+
+class ErroSchema(Schema):
+    error = fields.String()
+
+class ErrosSchema(Schema):
+    errors = fields.Dict()

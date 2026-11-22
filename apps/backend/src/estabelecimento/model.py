@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from ..conf_database import db
 
 
-class Estabelecimento(db.Model):
+class EstabelecimentoModel(db.Model):
     """Local onde as consultas acontecem (hospital, clínica, UBS, consultório...)."""
 
     __tablename__ = "estabelecimento"
