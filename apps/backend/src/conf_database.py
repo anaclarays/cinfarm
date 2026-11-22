@@ -15,18 +15,18 @@ def build_database_uri(database: str | None = None) -> URL:
         port=int(os.environ.get("POSTGRES_PORT", 5432)),
         database=database or os.environ["POSTGRES_DB"],
     )
-    
-class Base(DeclarativeBase):
-    metadata = MetaData()
 
-class Config:
+class DatabaseConfig:
     SQLALCHEMY_DATABASE_URI = build_database_uri()
-    
-class TestConfig(Config):
+
+class TestConfig(DatabaseConfig):
     SQLALCHEMY_DATABASE_URI = build_database_uri(
         os.environ.get("POSTGRES_TEST_DB", "db_cinfarm_test")
     )
     TESTING = True
+
+class Base(DeclarativeBase):
+    metadata = MetaData()
 
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()

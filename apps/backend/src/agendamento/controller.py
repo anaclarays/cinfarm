@@ -5,7 +5,7 @@ from flask.typing import ResponseReturnValue
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
-from ..extensions import db
+from ..conf_database import db
 from ..person.profiles import HealthProfessional, Patient
 from .model import Agendamento, MedicaoClinica, TipoParametro
 from .schema import AgendamentoSchema

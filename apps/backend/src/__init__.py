@@ -1,7 +1,8 @@
 from flask import Flask
 from .conf_database import db, migrate
 
-def create_app(config_object="src.config.Config"):
+
+def create_app(config_object="src.conf_flask.Config"):
     app = Flask(__name__)
     app.config.from_object(config_object)
 
