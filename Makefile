@@ -1,4 +1,4 @@
-.PHONY: up prod down clear reset merge migration upgrade init-back init-front
+.PHONY: up prod down clear reset merge migration upgrade seed init-back init-front
 
 export HOST_UID := $(shell id -u)
 export HOST_GID := $(shell id -g)
@@ -17,13 +17,16 @@ reset:
 	docker compose -f docker-compose.dev.yaml up -d --build
 
 merge:
-	docker exec -it backend_dev_cinfarm uv run flask src merge heads -m "Merge das heads - $(m)"
+	docker exec -it backend_dev_cinfarm uv run flask --app src merge heads -m "Merge das heads - $(m)"
 
 migration:
-	docker exec -it backend_dev_cinfarm uv run flask src db migrate -m "$(m)"
+	docker exec -it backend_dev_cinfarm uv run flask --app src db migrate -m "$(m)"
 	
 upgrade:
 	docker exec -it backend_dev_cinfarm uv run flask --app src db upgrade
+
+seed:
+	docker exec -it backend_dev_cinfarm uv run python -m scripts.seed
 
 init-back:
 	docker run --rm -it -v $(PWD)/apps/backend:/app -w /app ghcr.io/astral-sh/uv:python3.12-trixie-slim uv lock
