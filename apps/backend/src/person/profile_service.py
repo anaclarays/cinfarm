@@ -2,7 +2,12 @@ from typing import Any
 
 from marshmallow import ValidationError
 
+<<<<<<< HEAD
 from ..conf_database import db
+=======
+from ..extensions import db
+from ..medicamento.model import Medication
+>>>>>>> 64f075d153de0a3fa98d3ac6074fbc592ca35f3d
 from .model import Person
 from .profiles import (
     AllergicReaction,
@@ -10,7 +15,6 @@ from .profiles import (
     HealthCondition,
     HealthProfessional,
     Intern,
-    Medication,
     Patient,
 )
 from .schema import HealthProfessionalSchema, InternSchema, PatientSchema

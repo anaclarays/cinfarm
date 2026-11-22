@@ -100,13 +100,6 @@ class HealthCondition(db.Model):
     data_inicio: Mapped[date]
 
 
-class Medication(db.Model):
-    __tablename__ = "medicamento"
-
-    medicamento_id: Mapped[int] = mapped_column(primary_key=True)
-    nome_medicamento: Mapped[str] = mapped_column(String(200))
-
-
 class AllergicReaction(db.Model):
     __tablename__ = "reacao_alergica"
 

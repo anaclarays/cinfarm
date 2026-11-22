@@ -6,15 +6,12 @@ from sqlalchemy.exc import IntegrityError
 from ..conf_database import db
 from .model import Person
 from .profile_service import apply_profile, serialize, serialize_detail
-from .profiles import Medication
-from .schema import MedicationSchema, PersonSchema
+from .schema import PersonSchema
 
 bp = Blueprint("person", __name__, url_prefix="/person")
-medication_bp = Blueprint("medication", __name__, url_prefix="/medication")
 
 create_schema = PersonSchema()
 update_schema = PersonSchema(exclude=("cpf",))
-medication_schema = MedicationSchema()
 
 
 @bp.get("/", strict_slashes=False)
@@ -101,24 +98,3 @@ def delete(cpf: str) -> ResponseReturnValue:
         return {"error": "A pessoa possui registros vinculados."}, 409
 
     return "", 204
-
-
-@medication_bp.get("/", strict_slashes=False)
-def list_medications() -> ResponseReturnValue:
-    medications = db.session.scalars(db.select(Medication).order_by(Medication.medicamento_id))
-    return {"medicamentos": medication_schema.dump(medications, many=True)}
-
-
-@medication_bp.post("/", strict_slashes=False)
-def create_medication() -> ResponseReturnValue:
-    try:
-        values = medication_schema.load(request.get_json(silent=True))
-    except ValidationError as error:
-        return {"errors": error.messages}, 400
-
-    medication = Medication(**values)
-    db.session.add(medication)
-    db.session.flush()
-    result = medication_schema.dump(medication)
-    db.session.commit()
-    return result, 201
