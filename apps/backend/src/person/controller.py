@@ -3,7 +3,7 @@ from flask.typing import ResponseReturnValue
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
-from ..extensions import db
+from ..conf_database import db
 from .model import Person
 from .profile_service import apply_profile, serialize, serialize_detail
 from .profiles import Medication

@@ -3,7 +3,7 @@ from __future__ import annotations
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from ..extensions import db
+from ..conf_database import db
 from .profiles import HealthProfessional, Intern, Patient
 
 

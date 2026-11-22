@@ -21,6 +21,23 @@ wheels = [
 ]
 
 [[package]]
+name = "apispec"
+version = "6.10.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/10/ae/da295e3a85bf8188dd5f15e91e245ecc946c9c6af319883baaffd37f1b6d/apispec-6.10.1.tar.gz", hash = "sha256:46896cb0cab23b4e853e528528937719739f836358832bb8610edd14db1d9c01", size = 81888, upload-time = "2026-11-04T01:00:34.015Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/db/5cf71859fe2e0e8c061d90f14388f7f26ec20c9341e82788f467c13b101d/apispec-6.10.1-py3-none-any.whl", hash = "sha256:3fd9a4b624dfabf3a9d25610c0fcb743ac8e66495037d914ee3977ec4bf0386b", size = 33057, upload-time = "2026-11-04T01:00:32.312Z" },
+]
+
+[package.optional-dependencies]
+marshmallow = [
+    { name = "marshmallow" },
+]
+
+[[package]]
 name = "ast-serialize"
 version = "0.13.1"
 source = { registry = "https://pypi.org/simple" }
@@ -101,6 +118,7 @@ dependencies = [
     { name = "flask" },
     { name = "flask-cors" },
     { name = "flask-migrate" },
+    { name = "flask-smorest" },
     { name = "flask-sqlalchemy" },
     { name = "gunicorn" },
     { name = "marshmallow" },
@@ -124,6 +142,7 @@ requires-dist = [
     { name = "flask", specifier = ">=3.0,<4.0" },
     { name = "flask-cors", specifier = ">=4.0" },
     { name = "flask-migrate", specifier = ">=4.0,<5.0" },
+    { name = "flask-smorest", specifier = ">=0.47.0" },
     { name = "flask-sqlalchemy", specifier = ">=3.1,<4.0" },
     { name = "gunicorn", specifier = ">=22.0" },
     { name = "marshmallow", specifier = ">=3.20,<4.0" },
@@ -340,6 +359,22 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/1b/cf/d6167af60d6222d2898dca238a787ce47ce22a8afce41e5f1cf1023a31c3/Flask-Seeder-1.2.0.tar.gz", hash = "sha256:7fcfd2ad9aa0b7aad32b0d4684d2ee6cfcbc06a5ba1f8e3fe6ea07bf0f5b757c", size = 35178, upload-time = "2020-12-12T15:31:24.378Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/98/c5/ccfe8e7c4adbd48abc96f0c9061b89c136ef285fc849b445fa6aa19686b5/Flask_Seeder-1.2.0-py3-none-any.whl", hash = "sha256:8ffa20de8fdfe8af1852f994d5b8e41792faf8f90e0065e1c6b6f71e324cb7ea", size = 33518, upload-time = "2020-12-12T15:31:23.05Z" },
+]
+
+[[package]]
+name = "flask-smorest"
+version = "0.47.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "apispec", extra = ["marshmallow"] },
+    { name = "flask" },
+    { name = "marshmallow" },
+    { name = "webargs" },
+    { name = "werkzeug" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/99/b0/5edd5f3231ea26b52e786588c45d786df26929d2be8fec634bcb871b2a3f/flask_smorest-0.47.0.tar.gz", hash = "sha256:a415ce7db3d7e63dd854eb16d59047686dbf5d31c4913e245fa5657f88e7788d", size = 77600, upload-time = "2026-03-22T11:59:22.079Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/19/53cc4e4d4a3d61362053acd359a425f3e9f2c792698dd4dbb5f5441b5f97/flask_smorest-0.47.0-py3-none-any.whl", hash = "sha256:9329d8697f8710ea6446e9b7876a4f58af2dbc02116d10ebac6f24a7c0ebdea9", size = 32379, upload-time = "2026-03-22T11:59:20.449Z" },
 ]
 
 [[package]]
@@ -1018,6 +1053,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/7a/29/6a1391d31cd00ff9e927215a224a880e1e84e826b64ba80a499e51c074d8/tzdata-2026.6.tar.gz", hash = "sha256:85d2cd9c09f81f0bb29db27759fc83af4f1e620efb814f8c5bf8b4cc4feece6d", size = 201017, upload-time = "2026-10-28T09:57:09.137Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0a/66/9a06c2227fedfd4919f0eaaa8b94377d9730882a7e4f95823c9a331ab5e1/tzdata-2026.6-py2.py3-none-any.whl", hash = "sha256:0a10eec6e13ef16b627fabed9a5f2ba61a62b1c67f327305f4e7e412a70b4aec", size = 348210, upload-time = "2026-10-28T09:57:07.276Z" },
+]
+
+[[package]]
+name = "webargs"
+version = "8.7.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "marshmallow" },
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/37/64/17afc4e6f47eef154a553c6e56adcc9f1ac3003305c7df978d11aa62937e/webargs-8.7.1.tar.gz", hash = "sha256:799bf9039c76c23fd8dc1951107a75a9e561203c15d6ae8f89c1e46e234636c1", size = 97351, upload-time = "2025-10-29T16:07:50.066Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/41/ef/b0d17f3943429358184449771b592e0e1d33bbeaa6ed326434a95eac187b/webargs-8.7.1-py3-none-any.whl", hash = "sha256:a184aed9d2509e6e14ab99ee3e9dc3a614c7070affe94cd4dfdb0d002e0a6e5f", size = 32500, upload-time = "2025-10-29T16:07:47.895Z" },
 ]
 
 [[package]]

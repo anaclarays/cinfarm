@@ -2,7 +2,7 @@ from typing import Any
 
 from marshmallow import ValidationError
 
-from ..extensions import db
+from ..conf_database import db
 from .model import Person
 from .profiles import (
     AllergicReaction,

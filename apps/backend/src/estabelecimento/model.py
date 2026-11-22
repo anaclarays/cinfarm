@@ -1,7 +1,7 @@
 from sqlalchemy import CheckConstraint, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from ..extensions import db
+from ..conf_database import db
 
 
 class Estabelecimento(db.Model):

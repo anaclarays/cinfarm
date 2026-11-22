@@ -4,7 +4,7 @@ from flask import Blueprint, request, url_for
 from flask.typing import ResponseReturnValue
 from sqlalchemy.exc import IntegrityError
 
-from ..extensions import db
+from ..conf_database import db
 from .model import Estabelecimento
 
 bp = Blueprint("estabelecimento", __name__, url_prefix="/estabelecimentos")
