@@ -41,6 +41,7 @@ services:
         environment:
           CHOKIDAR_USEPOLLING: 'true'
           WATCHPACK_POLLING: 'true'
+          API_PROXY_TARGET: http://backend:8000
         volumes:
           - ./apps/frontend:/app
           - frontend_volume:/app/node_modules

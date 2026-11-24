@@ -50,6 +50,18 @@ class AgendamentoSchema(Schema):
         validate=_at_least_one,
     )
 
+class AgendamentoResumoSchema(Schema):
+    agendamento_id = fields.Integer()
+    data_hora_prevista = fields.DateTime()
+    status = fields.String()
+    paciente = fields.String()
+    profissional_saude = fields.String()
+
+
+class AgendamentoListaSchema(Schema):
+    agendamentos = fields.List(fields.Nested(AgendamentoResumoSchema))
+
+
 class ErroSchema(Schema):
     error = fields.String()
 

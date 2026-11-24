@@ -4,10 +4,12 @@ from flask.typing import ResponseReturnValue
 from flask.views import MethodView
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import selectinload
 
 from ..conf_database import db
 from .model import PessoaModel
 from .profile_service import (
+    PROFILES,
     apply_profile, 
     serialize, 
     serialize_detail
@@ -36,8 +38,21 @@ class PersonList(MethodView):
     @bp.doc(summary="Lista pessoas")
     @bp.alt_response(200, schema=PessoaListaSchema, description="Lista de pessoas")
     def get(self) -> ResponseReturnValue:
-        people = db.session.scalars(db.select(PessoaModel).order_by(PessoaModel.cpf))
-        return {"All people": [serialize(person) for person in people]}
+        query = (
+            db.select(PessoaModel)
+            .options(*(selectinload(getattr(PessoaModel, key)) for key in PROFILES))
+            .order_by(PessoaModel.cpf)
+        )
+        people = db.session.scalars(query)
+        return {
+            "All people": [
+                {
+                    **serialize(person),
+                    "perfil": next((key for key in PROFILES if getattr(person, key) is not None), None),
+                }
+                for person in people
+            ]
+        }
         
     @bp.doc(summary="Cria uma pessoa")
     @bp.alt_response(201, schema=PessoaSchema, description="Pessoa criada (header Location com a URL)")
