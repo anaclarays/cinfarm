@@ -104,8 +104,15 @@ class PessoaSchema(SQLAlchemyAutoSchema):
     profissional_saude = fields.Raw()
     estagiario = fields.Raw()
 
+class PessoaResumoSchema(Schema):
+    cpf = fields.String()
+    name = fields.String()
+    telephone = fields.String()
+    perfil = fields.String(allow_none=True)
+
+
 class PessoaListaSchema(Schema):
-    pessoas = fields.List(fields.Nested(PessoaSchema))
+    pessoas = fields.List(fields.Nested(PessoaResumoSchema), data_key="All people")
 
 class ErroSchema(Schema):
     error = fields.String()

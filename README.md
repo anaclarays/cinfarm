@@ -24,7 +24,7 @@ A solução está sendo estruturada com um backend que deverá expor operações
 
 - **Banco de dados modelado**, com entidades, relacionamentos e integridade referencial — **completo**.
 - **Backend com API CRUD**, conectado ao banco de dados — **completo**: a estrutura Flask está prevista, mas ainda não há rotas ou modelos implementados.
-- **Interface gráfica**, comunicando-se exclusivamente pelos endpoints do backend — **parcial**: nenhum frontend foi encontrado.
+- **Interface gráfica** com navegação e listagens de agenda e cadastros via API. Consulte a [documentação do frontend](apps/frontend/README.md).
 
 ## Executar o ambiente de desenvolvimento
 

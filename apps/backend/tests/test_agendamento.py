@@ -4,11 +4,11 @@ from decimal import Decimal
 import pytest
 
 from src.agendamento.model import AgendamentoModel, MedicaoClinicaModel, TipoParametroModel
-from src.extensions import db
+from src.conf_database import db
 from src.pessoa.model import PessoaModel
 from src.pessoa.profiles import CareProvider, HealthProfessional, Patient
 
-URL = "/agendamentos/"
+URL = "/api/agendamento/"
 
 VALIDO = {
     "paciente_cpf": "12345678901",
@@ -93,6 +93,27 @@ def criar(client, **mudancas):
     r = client.post(URL, json={**VALIDO, **mudancas})
     assert r.status_code == 201, r.get_json()
     return r.get_json()
+
+
+def test_listar_agendamentos_em_ordem_cronologica_com_nomes(client, pessoas):
+    assert client.get(URL).get_json() == {"agendamentos": []}
+    posterior = criar(client)
+    anterior = criar(client, data_hora_prevista="2026-11-24T14:30:00")
+
+    response = client.get(URL)
+    assert response.status_code == 200
+    registros = response.get_json()["agendamentos"]
+    assert [item["agendamento_id"] for item in registros] == [
+        anterior["agendamento_id"],
+        posterior["agendamento_id"],
+    ]
+    assert registros[0] == {
+        "agendamento_id": anterior["agendamento_id"],
+        "data_hora_prevista": "2026-11-24T14:30:00",
+        "status": "agendado",
+        "paciente": "Maria Silva",
+        "profissional_saude": "Dr. Carlos",
+    }
 
 
 # ---------------------------------------------------------------- cadastrar

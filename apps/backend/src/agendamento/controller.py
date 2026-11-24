@@ -6,11 +6,13 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import aliased
 
 from ..conf_database import db
+from ..pessoa.model import PessoaModel
 from ..pessoa.profiles import HealthProfessional, Patient
 from .model import AgendamentoModel, MedicaoClinicaModel, TipoParametroModel
-from .schema import AgendamentoSchema, ErroSchema, ErroValidacaoSchema
+from .schema import AgendamentoListaSchema, AgendamentoSchema, ErroSchema, ErroValidacaoSchema
 
 bp = Blueprint(
     "agendamento", 
@@ -55,6 +57,27 @@ def _serialize(a: AgendamentoModel) -> dict[str, Any]:
 
 @bp.route("/", strict_slashes=False)
 class Agendamento(MethodView):
+    @bp.doc(summary="Lista agendamentos")
+    @bp.response(200, AgendamentoListaSchema)
+    def get(self) -> ResponseReturnValue:
+        paciente = aliased(PessoaModel)
+        profissional = aliased(PessoaModel)
+        agendamento = AgendamentoModel
+        query = (
+            db.select(
+                agendamento.agendamento_id,
+                agendamento.data_hora_prevista,
+                agendamento.status,
+                paciente.name.label("paciente"),
+                profissional.name.label("profissional_saude"),
+            )
+            .select_from(agendamento)
+            .join(paciente, paciente.cpf == agendamento.paciente_cpf)
+            .join(profissional, profissional.cpf == agendamento.profissional_saude_cpf)
+            .order_by(agendamento.data_hora_prevista, agendamento.agendamento_id)
+        )
+        return {"agendamentos": db.session.execute(query).mappings().all()}
+
     
     @bp.doc(summary="Cria um agendamento")
     @bp.alt_response(201, schema=AgendamentoSchema, description="Agendamento criado")
