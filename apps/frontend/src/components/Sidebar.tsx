@@ -1,6 +1,7 @@
 import {
   Building2,
   CalendarDays,
+  CalendarPlus,
   ChevronDown,
   ClipboardList,
   HeartPulse,
@@ -15,6 +16,7 @@ import type { Page } from '../navigation'
 
 const primaryLinks = [
   { page: 'agenda', icon: CalendarDays },
+  { page: 'realizar-agendamento', icon: CalendarPlus },
   { page: 'pacientes', icon: UsersRound },
   { page: 'profissionais', icon: Stethoscope },
 ] satisfies NavItem[]
