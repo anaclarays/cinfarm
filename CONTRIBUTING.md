@@ -7,7 +7,7 @@ Boas-vindas! Contribuições são feitas por Pull Requests e ajudam a evoluir o 
 | Nome | Função | GitHub |
 |---|---|---|
 | Ana Clara Souza Bizarria | dev | <@anaclarays> |
-| Byanca Hayally Candido de Souza | dev | <@> |
+| Byanca Hayally Candido de Souza | dev | <@byancasouzacs> |
 | Gabriel Cássio Gomes Cileiro | dev | <@GabrielCassio> |
 | Jaianny Karla de Oliveira Souza| dev | <@jaikarla> |
 | Luiz Miguel de Oliveira Siqueira | dev | <@oliveiraluizmiguel57-blip> |
