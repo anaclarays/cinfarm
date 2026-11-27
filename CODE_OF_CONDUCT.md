@@ -1,4 +1,4 @@
-# Malungo Lab Code of Conduct
+# Cinfarm Code of Conduct
 
 This code of conduct outlines expectations for participation in Malungo Lab open source communities, as well as steps for reporting unacceptable behavior. We are committed to providing a welcoming and inspiring community for all. People violating this code of conduct may be banned from the community.
 
