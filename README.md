@@ -31,15 +31,12 @@ A solução está sendo estruturada com um backend que deverá expor operações
 Pré-requisitos: Docker e Docker Compose. Na raiz do repositório, crie o arquivo de configuração local e inicie os serviços:
 
 ```bash
-git clone https://github.com/GabrielCassio/cinfarm.git
+git clone https://github.com/anaclarays/cinfarm.git
 cd cinfarm
 cp .env.example .env
 make up
-<<<<<<< HEAD
-make migration m="Initial migration by models."
-=======
 make upgrade
->>>>>>> 7d790e0110f789acbb0f5d2d7dfcbe70bc632632
+make seed
 ```
 
 Antes do `make up`, abra o `.env` e ajuste as variáveis:
