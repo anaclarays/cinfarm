@@ -17,7 +17,7 @@ reset:
 	docker compose -f docker-compose.dev.yaml up -d --build
 
 merge:
-	docker exec -it backend_dev_cinfarm uv run flask --app src merge heads -m "Merge das heads - $(m)"
+	docker exec -it backend_dev_cinfarm uv run flask --app src db merge heads -m "Merge das heads - $(m)"
 
 migration:
 	docker exec -it backend_dev_cinfarm uv run flask --app src db migrate -m "$(m)"
@@ -27,6 +27,11 @@ upgrade:
 
 seed:
 	docker exec -it backend_dev_cinfarm uv run python -m scripts.seed
+
+seed-reset:
+	docker exec -it backend_dev_cinfarm uv run python -m scripts.reset
+
+reseed: seed-reset seed
 
 init-back:
 	docker run --rm -it -v $(PWD)/apps/backend:/app -w /app ghcr.io/astral-sh/uv:python3.12-trixie-slim uv lock

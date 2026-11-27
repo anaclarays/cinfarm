@@ -1,12 +1,19 @@
 import { Agenda } from './pages/Agenda'
-import { Pacientes, Profissionais } from './pages/Pessoas'
 import { Estabelecimentos, Medicamentos } from './pages/Operacional'
+import { Pacientes, Profissionais } from './pages/Pessoas'
+import { RealizarAgendamento } from './pages/RealizarAgendamento'
 
 export const pages = {
   agenda: {
     title: 'Agenda',
     description: 'Acompanhe os próximos agendamentos de consultas.',
     Component: Agenda,
+  },
+  'realizar-agendamento': {
+    title: 'Realizar Agendamento',
+    description:
+      'Cadastre um novo agendamento com suas medições clínicas e tipos de parâmetro.',
+    Component: RealizarAgendamento,
   },
   pacientes: {
     title: 'Pacientes',
