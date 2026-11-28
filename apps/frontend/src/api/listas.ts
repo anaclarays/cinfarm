@@ -1,3 +1,5 @@
+import type { Estabelecimento } from './estabelecimento'
+
 export type Agendamento = {
   agendamento_id: number
   data_hora_prevista: string
@@ -15,17 +17,6 @@ export type Pessoa = {
 
 export type Medicamento = { medicamento_id: number; nome_medicamento: string }
 
-export type Estabelecimento = {
-  estabelecimento_id: number
-  nome: string
-  tipo_atendimento: 'publico' | 'privado'
-  logradouro: string
-  numero: string | null
-  bairro: string
-  cidade: string
-  estado: string
-}
-
 export type ListaApi = {
   agendamento: { key: 'agendamentos'; row: Agendamento }
   pessoa: { key: 'All people'; row: Pessoa }
@@ -37,8 +28,9 @@ export async function buscarLista<Resource extends keyof ListaApi>(
   resource: Resource,
   key: ListaApi[Resource]['key'],
   signal: AbortSignal,
+  query = '',
 ): Promise<ListaApi[Resource]['row'][]> {
-  const response = await fetch(`/api/${resource}/`, {
+  const response = await fetch(`/api/${resource}/${query ? `?${query}` : ''}`, {
     headers: { Accept: 'application/json' },
     signal,
   })

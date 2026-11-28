@@ -12,7 +12,8 @@ export default function App() {
     return () => window.removeEventListener('hashchange', syncPage)
   }, [])
 
-  const { title, description, Component } = pages[page]
+  const configuration = pages[page]
+  const { title, description, Component } = configuration
 
   useEffect(() => {
     document.title = `${title} | CinFarm`
@@ -23,11 +24,13 @@ export default function App() {
       <Sidebar page={page} />
       <main className="workspace">
         <div className="content">
-          <header className="page-header">
-            <h1>{title}</h1>
-            <p>{description}</p>
-          </header>
-          <Component key={page} />
+          {!('customHeader' in configuration) && (
+            <header className="page-header">
+              <h1>{title}</h1>
+              <p>{description}</p>
+            </header>
+          )}
+          <Component key={page} title={title} description={description} />
         </div>
       </main>
     </div>

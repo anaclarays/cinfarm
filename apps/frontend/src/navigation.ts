@@ -1,5 +1,6 @@
 import { Agenda } from './pages/Agenda'
-import { Estabelecimentos, Medicamentos } from './pages/Operacional'
+import { Estabelecimentos } from './pages/Estabelecimentos'
+import { Medicamentos } from './pages/Operacional'
 import { Pacientes, Profissionais } from './pages/Pessoas'
 import { RealizarAgendamento } from './pages/RealizarAgendamento'
 
@@ -33,7 +34,8 @@ export const pages = {
   },
   estabelecimentos: {
     title: 'Estabelecimentos',
-    description: 'Consulte os estabelecimentos de saúde cadastrados.',
+    description: 'Cadastre, consulte e atualize os estabelecimentos de saúde.',
+    customHeader: true,
     Component: Estabelecimentos,
   },
 }
