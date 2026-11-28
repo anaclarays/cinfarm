@@ -1,9 +1,15 @@
 import { Agenda } from './pages/Agenda'
 import { Estabelecimentos, Medicamentos } from './pages/Operacional'
-import { Pacientes, Profissionais } from './pages/Pessoas'
+import { Pessoas } from './pages/Pessoas'
 import { RealizarAgendamento } from './pages/RealizarAgendamento'
+import { VisaoGeral } from './pages/VisaoGeral'
 
 export const pages = {
+	'visao-geral': {
+		title: 'Visão Geral',
+		description: "Acomponhe em números todas as entidades cadastradas",
+		Component: VisaoGeral
+	},
   agenda: {
     title: 'Agenda',
     description: 'Acompanhe os próximos agendamentos de consultas.',
@@ -14,18 +20,12 @@ export const pages = {
     description:
       'Cadastre um novo agendamento com suas medições clínicas e tipos de parâmetro.',
     Component: RealizarAgendamento,
-  },
-  pacientes: {
-    title: 'Pacientes',
-    description: 'Consulte os pacientes cadastrados no sistema.',
-    Component: Pacientes,
-  },
-  profissionais: {
-    title: 'Profissionais de Saúde',
-    description:
-      'Consulte os profissionais de saúde e estagiários cadastrados.',
-    Component: Profissionais,
-  },
+	},
+	pessoas: {
+		title: 'Pessoas',
+    description: 'Consulte as pessoas cadastradas e adicione novas no sistema.',
+    Component: Pessoas,
+	},
   medicamentos: {
     title: 'Medicamentos',
     description: 'Consulte os medicamentos cadastrados no sistema.',
@@ -41,6 +41,7 @@ export const pages = {
 export type Page = keyof typeof pages
 
 export function getPage(): Page {
-  const slug = window.location.hash.slice(1)
-  return Object.hasOwn(pages, slug) ? (slug as Page) : 'agenda'
+	const slug = window.location.hash.slice(1)
+	const page = (pages as Record<string, { Component?: unknown }>)[slug]
+  return page?.Component ? (slug as Page) : 'agenda'
 }

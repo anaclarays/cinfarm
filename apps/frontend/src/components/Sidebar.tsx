@@ -1,4 +1,5 @@
 import {
+	Layers2,
   Building2,
   CalendarDays,
   CalendarPlus,
@@ -6,7 +7,6 @@ import {
   ClipboardList,
   HeartPulse,
   Pill,
-  Stethoscope,
   UsersRound,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -15,10 +15,10 @@ import { getPage, pages } from '../navigation'
 import type { Page } from '../navigation'
 
 const primaryLinks = [
+	{ page: 'visao-geral', icon: Layers2},
   { page: 'agenda', icon: CalendarDays },
-  { page: 'realizar-agendamento', icon: CalendarPlus },
-  { page: 'pacientes', icon: UsersRound },
-  { page: 'profissionais', icon: Stethoscope },
+	{ page: 'realizar-agendamento', icon: CalendarPlus },
+	{ page: 'pessoas', icon: UsersRound},
 ] satisfies NavItem[]
 
 const operationalLinks = [

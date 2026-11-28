@@ -12,7 +12,8 @@ export default function App() {
     return () => window.removeEventListener('hashchange', syncPage)
   }, [])
 
-  const { title, description, Component } = pages[page]
+	const { title, description } = pages[page]
+	const Component = 'Component' in pages[page] ? pages[page].Component : undefined	
 
   useEffect(() => {
     document.title = `${title} | CinFarm`
@@ -27,7 +28,7 @@ export default function App() {
             <h1>{title}</h1>
             <p>{description}</p>
           </header>
-          <Component key={page} />
+          {Component ? <Component key={page} /> : <p>Página em construção.</p>}
         </div>
       </main>
     </div>
