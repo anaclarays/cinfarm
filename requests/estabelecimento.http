@@ -1,10 +1,10 @@
 # Exemplos de requisições - Estabelecimentos
 # VS Code: extensão "REST Client" -> clique em "Send Request" acima de cada bloco.
 # Rode de cima para baixo em um banco sem estabelecimentos (os ids 1 e 2 dependem disso).
-@base = http://localhost:8000
+@estabelecimentos = http://localhost:8000/api/estabelecimento
 
 ### Cadastrar (espera 201)
-POST {{base}}/estabelecimentos
+POST {{estabelecimentos}}/
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ### Cadastrar com complemento (espera 201)
-POST {{base}}/estabelecimentos
+POST {{estabelecimentos}}/
 Content-Type: application/json
 
 {
@@ -35,13 +35,13 @@ Content-Type: application/json
 }
 
 ### Erro: campos obrigatórios ausentes (espera 400)
-POST {{base}}/estabelecimentos
+POST {{estabelecimentos}}/
 Content-Type: application/json
 
 { "nome": "Incompleto" }
 
 ### Erro: tipo de atendimento inválido (espera 400)
-POST {{base}}/estabelecimentos
+POST {{estabelecimentos}}/
 Content-Type: application/json
 
 {
@@ -50,25 +50,25 @@ Content-Type: application/json
 }
 
 ### Listar todos (espera 200)
-GET {{base}}/estabelecimentos
+GET {{estabelecimentos}}/
 
 ### Listar com filtros: tipo_atendimento, estado, cidade, nome (espera 200)
-GET {{base}}/estabelecimentos?tipo_atendimento=privado&estado=PE
+GET {{estabelecimentos}}/?tipo_atendimento=privado&estado=PE
 
 ### Consultar por id (espera 200)
-GET {{base}}/estabelecimentos/1
+GET {{estabelecimentos}}/1
 
 ### Consultar id inexistente (espera 404)
-GET {{base}}/estabelecimentos/999
+GET {{estabelecimentos}}/999
 
 ### Atualizar parcialmente - PATCH (espera 200)
-PATCH {{base}}/estabelecimentos/1
+PATCH {{estabelecimentos}}/1
 Content-Type: application/json
 
 { "bairro": "Boa Vista" }
 
 ### Substituir todos os dados - PUT (espera 200)
-PUT {{base}}/estabelecimentos/1
+PUT {{estabelecimentos}}/1
 Content-Type: application/json
 
 {
@@ -77,7 +77,7 @@ Content-Type: application/json
 }
 
 ### Remover (espera 204)
-DELETE {{base}}/estabelecimentos/2
+DELETE {{estabelecimentos}}/2
 
 ### Remover id inexistente (espera 404)
-DELETE {{base}}/estabelecimentos/2
+DELETE {{estabelecimentos}}/2

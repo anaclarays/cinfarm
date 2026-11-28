@@ -9,7 +9,7 @@ VALIDO = {
     "estado": "PE",
     "cep": "50000000",
 }
-URL = "/estabelecimentos"
+URL = "/api/estabelecimento"
 
 
 def criar(client, **mudancas):
@@ -25,7 +25,7 @@ def test_cadastrar_retorna_201_com_id_e_location(client):
     corpo = r.get_json()
     assert corpo["estabelecimento_id"] == 1
     assert corpo["nome"] == "UBS Centro"
-    assert r.headers["Location"].endswith("/estabelecimentos/1")
+    assert r.headers["Location"].endswith(f"{URL}/1")
 
 
 def test_cadastrar_sem_campos_opcionais(client):

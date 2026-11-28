@@ -17,6 +17,7 @@ type ListProps<Resource extends keyof ListaApi> = {
   columns: Column<ListaApi[Resource]['row']>[]
   rowKey: (row: ListaApi[Resource]['row']) => string | number
   filter?: (row: ListaApi[Resource]['row']) => boolean
+  query?: string
 }
 
 type LoadState<Row> =
@@ -30,6 +31,7 @@ export function Lista<Resource extends keyof ListaApi>({
   columns,
   rowKey,
   filter,
+  query,
 }: ListProps<Resource>) {
   const [state, setState] = useState<LoadState<ListaApi[Resource]['row']>>({
     status: 'loading',
@@ -38,7 +40,7 @@ export function Lista<Resource extends keyof ListaApi>({
 
   useEffect(() => {
     const controller = new AbortController()
-    buscarLista(resource, responseKey, controller.signal).then(
+    buscarLista(resource, responseKey, controller.signal, query).then(
       (rows) => {
         if (!controller.signal.aborted) setState({ status: 'ready', rows })
       },
@@ -47,7 +49,7 @@ export function Lista<Resource extends keyof ListaApi>({
       },
     )
     return () => controller.abort()
-  }, [resource, responseKey, attempt])
+  }, [resource, responseKey, attempt, query])
 
   const rows =
     state.status === 'ready'
