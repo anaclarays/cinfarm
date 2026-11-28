@@ -1,5 +1,6 @@
 import { Agenda } from './pages/Agenda'
-import { Estabelecimentos, Medicamentos } from './pages/Operacional'
+import { Medicamentos } from './pages/Medicamentos'
+import { Estabelecimentos } from './pages/Operacional'
 import { Pacientes, Profissionais } from './pages/Pessoas'
 import { RealizarAgendamento } from './pages/RealizarAgendamento'
 
@@ -27,8 +28,7 @@ export const pages = {
     Component: Profissionais,
   },
   medicamentos: {
-    title: 'Medicamentos',
-    description: 'Consulte os medicamentos cadastrados no sistema.',
+    title: 'Controle de Medicamentos',
     Component: Medicamentos,
   },
   estabelecimentos: {

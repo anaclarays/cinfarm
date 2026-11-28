@@ -12,7 +12,8 @@ export default function App() {
     return () => window.removeEventListener('hashchange', syncPage)
   }, [])
 
-  const { title, description, Component } = pages[page]
+  const activePage = pages[page]
+  const { title, Component } = activePage
 
   useEffect(() => {
     document.title = `${title} | CinFarm`
@@ -25,7 +26,7 @@ export default function App() {
         <div className="content">
           <header className="page-header">
             <h1>{title}</h1>
-            <p>{description}</p>
+            {'description' in activePage && <p>{activePage.description}</p>}
           </header>
           <Component key={page} />
         </div>
