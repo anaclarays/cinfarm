@@ -6,6 +6,7 @@ import type { ListaApi } from '../api/listas'
 
 type Column<Row> = {
   title: string
+  className?: string
   render: (row: Row) => ReactNode
 }
 
@@ -99,8 +100,8 @@ export function Lista<Resource extends keyof ListaApi>({
             <table aria-labelledby="list-title">
               <thead>
                 <tr>
-                  {columns.map(({ title }) => (
-                    <th key={title} scope="col">
+                  {columns.map(({ title, className }) => (
+                    <th key={title} scope="col" className={className}>
                       {title}
                     </th>
                   ))}
@@ -109,8 +110,10 @@ export function Lista<Resource extends keyof ListaApi>({
               <tbody>
                 {rows.map((row) => (
                   <tr key={rowKey(row)}>
-                    {columns.map(({ title, render }) => (
-                      <td key={title}>{render(row)}</td>
+                    {columns.map(({ title, className, render }) => (
+                      <td key={title} className={className}>
+                        {render(row)}
+                      </td>
                     ))}
                   </tr>
                 ))}

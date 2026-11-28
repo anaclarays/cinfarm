@@ -416,6 +416,50 @@ time {
   justify-content: flex-end;
 }
 
+.medicamento-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.medicamento-coluna-acoes {
+  width: 1%;
+  text-align: center;
+}
+
+.medicamento-coluna-acoes .medicamento-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(5.5rem, 1fr));
+  align-items: center;
+}
+
+.medicamento-coluna-acoes button:first-child {
+  justify-self: end;
+}
+
+.medicamento-coluna-acoes button:nth-child(2) {
+  justify-self: start;
+}
+
+.medicamento-notificacao {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 10;
+  max-width: calc(100% - 2rem);
+  pointer-events: none;
+}
+
+.medicamento-nome {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.medicamento-erro-exclusao {
+  grid-column: 1 / -1;
+}
+
 .alert {
   display: flex;
   align-items: center;

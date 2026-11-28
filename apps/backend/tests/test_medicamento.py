@@ -1,4 +1,4 @@
-URL = "/medication"
+URL = "/api/medicamento"
 
 
 def criar(client, nome="Dipirona"):
