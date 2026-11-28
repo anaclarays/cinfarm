@@ -1,6 +1,7 @@
 from flask import Flask
 from .conf_database import db, migrate
 from .conf_swagger import api, build_swagger
+from .conf_cors import build_cors
 from .core import register_module
 from .app_module import app_module
 
@@ -11,6 +12,7 @@ def create_app(config_object="src.conf_flask.Config"):
     
     db.init_app(app)
     migrate.init_app(app, db)
+    build_cors(app)
     build_swagger(app)
     
     register_module(api, app_module)

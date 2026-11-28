@@ -79,10 +79,10 @@ class PersonList(MethodView):
                 return {"error": "Já existe uma pessoa cadastrada com esse CPF."}, 409
             return {"error": "Um vínculo dos dados informados deixou de ser válido."}, 409
     
-        return result, 201, {"Location": url_for("person.find_by_cpf", cpf=result["cpf"])}
+        return result, 201, {"Location": url_for(f"{bp.name}.find_by_cpf", cpf=result["cpf"])}
 
 
-@bp.route("/<cpf>", strict_slashes=False)
+@bp.route("/<cpf>", strict_slashes=False, endpoint="find_by_cpf")
 class Person(MethodView):
 
     @bp.doc(summary="Busca uma pessoa pelo CPF")
